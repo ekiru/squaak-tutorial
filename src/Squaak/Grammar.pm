@@ -29,13 +29,31 @@ rule statement {
 }
 
 proto token statement_control { <...> }
+
+rule statement_control:sym<assignment> { 
+    <primary> '=' <EXPR>
+}
+
 rule statement_control:sym<say>   { <sym> [ <EXPR> ] ** ','  }
 rule statement_control:sym<print> { <sym> [ <EXPR> ] ** ','  }
 
 ## Terms
 
-token term:sym<integer> { <integer> }
-token term:sym<quote> { <quote> }
+rule primary {
+    <identifier>
+}
+
+token identifier {
+    <!keyword> <ident>
+}
+
+token keyword {
+    ['and'|'catch'|'do'   |'else' |'end' |'for' |'if'
+    |'not'|'or'   |'sub'  |'throw'|'try' |'var'|'while']>>
+}
+
+token term:sym<integer_constant> { <integer> }
+token term:sym<string_constant> { <quote> }
 
 proto token quote { <...> }
 token quote:sym<'> { <?[']> <quote_EXPR: ':q'> }

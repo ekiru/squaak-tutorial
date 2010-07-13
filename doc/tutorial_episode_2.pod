@@ -222,8 +222,8 @@ marked with a comment
 
 Starting in the next episode, the exercises will be more interesting. For now,
 it would be useful to browse around through the source files of the compiler,
-and see if you understand the relation between the grammar rules in grammar.pg
-and the methods in actions.pm.
+and see if you understand the relation between the grammar rules in src/Squaak/Grammar.pm
+and the methods in src/Squaak/Actions.pm.
 It's also useful to experiment with the --target option described in this
 episode. If you don't know PIR, now is the time to do some preparation for that.
 There's sufficient information to be found on PIR, see the References section

@@ -135,7 +135,7 @@ implies the following order:
 
 =item  2. parse statement
 
-=item  3. parse if_statement
+=item  3. parse statement:sym<if>
 
 =item  4. parse expression
 
@@ -147,7 +147,7 @@ implies the following order:
 
 =item  8. parse statement
 
-=item  9. parse assignment
+=item  9. parse statement:sym<assignment>
 
 =item 10. parse identifier
 

@@ -372,15 +372,11 @@ object of this assignment and set it as statement's result object using the
 special make function. Do the same for rule primary.
 
  method statement($/) {
-     make $( $<assignment> );
+     make $<assignment>.ast;
  }
 
-Note that at this point, the rule statement doesn't define different #= keys
-for each type of statement, so we don't declare a parameter C<$key>. This will
-be changed later.
-
  method primary($/) {
-     make $( $<identifier> );
+     make $<identifier>.ast;
  }
 
 =item 3

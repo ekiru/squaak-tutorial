@@ -414,7 +414,7 @@ find out how you do such a binding).
 
 Note that we set the lvalue flag on $lhs. See PDD26 for details on this flag.
 
-=item 5
+=item 6
 
 Run your compiler on a script or in interactive mode. Use the target option to
 see what PIR is being generated on the input "x = 42".

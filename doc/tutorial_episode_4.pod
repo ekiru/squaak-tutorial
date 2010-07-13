@@ -70,12 +70,11 @@ part. Implementing this in Perl 6 rules and PAST is almost trivial:
 
     rule block {
         <statement>*
-        {*}
     }
 
     rule statement {
-        | <assignment> {*}          #= assignment
-        | <if_statement> {*}        #= if_statement
+        | <assignment>          #= assignment
+        | <if_statement>        #= if_statement
     }
 
 Note that the optional else block is stored in the match object's "else" field.

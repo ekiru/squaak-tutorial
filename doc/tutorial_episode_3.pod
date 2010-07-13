@@ -162,28 +162,18 @@ located at, ehm... the top. When the parser is invoked, it will start at this
 rule (a rule is nothing else than a method of the grammar class).
 When we generated this language (in the first episode), some default rules were
 defined. Now we're going to make some small changes, just enough to get us
-started. Firstly, change the statement rule to this:
+started. Add these rules:
 
-    rule statement {
-        <assignment>
-        {*}
-    }
-
-and add these rules:
-
-    rule assignment {
-        <primary> '=' <expression>
-        {*}
+    rule statement_control:sym<assignment> {
+        <primary> '=' <EXPR>
     }
 
     rule primary {
         <identifier>
-        {*}
     }
 
     token identifier {
         <!keyword> <ident>
-        {*}
     }
 
     token keyword {
@@ -191,14 +181,7 @@ and add these rules:
         |'not'|'or'   |'sub'  |'throw'|'try' |'var'|'while']>>
     }
 
-Now, change the rule "value" into this (renaming to "expression"):
-
-    rule expression {
-        | <string_constant> {*}        #= string_constant
-        | <integer_constant> {*}       #= integer_constant
-    }
-
-Rename the rule C<integer> as C<integer_constant>, and C<quote> as
+Rename the token C<term:sym<integer> > as C<integer_constant>, and C<term:sym<quote> > as
 C<string_constant> (to better match our language specification).
 
 Phew, that was a lot of information! Let's have a closer look at some things

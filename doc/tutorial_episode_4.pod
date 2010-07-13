@@ -89,7 +89,7 @@ takes a key argument. The relevant action methods are shown below:
     method statement($/, $key) {
         # get the field stored in $key from the $/ object,
         # and retrieve the result object from that field.
-        make $( $/{$key} );
+        make $/{$key}.ast;
     }
 
     method block($/) {
@@ -103,19 +103,19 @@ takes a key argument. The relevant action methods are shown below:
         # for each statement, add the result
         # object to the block
         for $<statement> {
-            $past.push( $( $_ ) );
+            $past.push($_.ast);
         }
         make $past;
     }
 
     method if_statement($/) {
-        my $cond := $( $<expression> );
-        my $then := $( $<block> );
+        my $cond := $<expression>.ast;
+        my $then := $<block>.ast;
         my $past := PAST::Op.new( $cond, $then,
                                   :pasttype('if'),
                                   :node($/) );
         if $<else> {
-            $past.push( $( $<else>[0] ) );
+            $past.push($<else>[0].ast);
         }
         make $past;
     }

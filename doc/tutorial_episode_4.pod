@@ -99,7 +99,7 @@ Note that the proto declaration for statement means that the result object for  
         make $past;
     }
 
-    method if_statement($/) {
+    method statement:sym<if>($/) {
         my $cond := $<expression>.ast;
         my $then := $<block>.ast;
         my $past := PAST::Op.new( $cond, $then,

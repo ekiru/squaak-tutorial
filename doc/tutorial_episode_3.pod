@@ -162,10 +162,16 @@ located at, ehm... the top. When the parser is invoked, it will start at this
 rule (a rule is nothing else than a method of the grammar class).
 When we generated this language (in the first episode), some default rules were
 defined. Now we're going to make some small changes, just enough to get us
-started. Add these rules:
+started. Replace the C<statement> rule with this rule:
 
-    rule statement_control:sym<assignment> {
-        <primary> '=' <EXPR>
+    rule statement {
+        <assignment>
+    }
+
+Add these rules:
+
+    rule assignment {
+        <primary> '=' <expression>
     }
 
     rule primary {
@@ -176,6 +182,11 @@ started. Add these rules:
         <!keyword> <ident>
     }
 
+    rule expression {
+        | <integer_constant>
+        | <string_constant>
+    }
+
     token keyword {
         ['and'|'catch'|'do'   |'else' |'end' |'for' |'if'
         |'not'|'or'   |'sub'  |'throw'|'try' |'var'|'while']>>
@@ -183,6 +194,8 @@ started. Add these rules:
 
 Rename the token C<term:sym<integer> > as C<integer_constant>, and C<term:sym<quote> > as
 C<string_constant> (to better match our language specification).
+
+Finally, remove the rules C<proto token statement_control>, C<rule statement_control:sym<say> >, <rule statement_control:sym<print> >, and everything after the "## Operators" line.
 
 Phew, that was a lot of information! Let's have a closer look at some things
 that may look unfamiliar. The first new thing is in the rule C<identifier>.

@@ -392,6 +392,14 @@ representation of the match object ($/). For now, you can set the scope to
 
 =item 4
 
+Write the action method for expression. If the integer_constant subrule matched, retrieve its result object; otherwise, retrieve the string_constant subrule's result object.
+
+ method expression($/) {
+    make $<integer_constant> ?? $<integer_constant>.ast !! <string_constant>.ast;
+ }
+
+=item 5
+
 Write the action method for assignment. Retrieve the result objects for
 "primary" and for "expression", and create a C<PAST::Op> node that binds the
 expression to the primary. (Check out pdd26 for C<PAST::Op> node types, and

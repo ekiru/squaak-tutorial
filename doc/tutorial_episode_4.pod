@@ -80,15 +80,8 @@ If we hadn't written this $<else>= part, then <block> would have been an array,
 with block[0] the "then" part, and block[1] the optional else part. Assigning
 the optional else block to a different field, makes the action method slightly
 easier to read.
-Also note that the statement rule has been updated; a statement is now either
-an assignment or an if-statement. As a result, the action method statement now
-takes a key argument. The relevant action methods are shown below:
-
-    method statement($/, $key) {
-        # get the field stored in $key from the $/ object,
-        # and retrieve the result object from that field.
-        make $/{$key}.ast;
-    }
+Note that the proto declaration for statement means that the result object for  $<statement> in any rule which calls statement as a subrule will be result object for whichever statement type matched. Because of this, we can delete the statement action method.
+ The relevant action methods are shown below:
 
     method block($/) {
         # create a new block, set its type to 'immediate',

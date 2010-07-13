@@ -33,7 +33,7 @@ rule assignment {
 }
 
 rule if_statement {
-    'if' <expression 'then' <block>
+    'if' <expression> 'then' <block>
     ['else' $<else>=<block> ]?
     'end'
 }

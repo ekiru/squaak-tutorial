@@ -15,7 +15,10 @@ method statement($/) {
 }
 
 method assignment($/) {
-    make PAST::Op.new(:pasttype<bind>, $<primary>.ast, $<expression>.ast);
+    my $lhs := $<primary>.ast;
+    my $rhs := $<expression>.ast;
+    $lhs.lvalue(1);
+    make PAST::Op.new($lhs, $rhs, :pasttype<bind>, :node($/));
 }
 
 method primary($/) {

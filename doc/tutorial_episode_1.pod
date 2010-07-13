@@ -233,7 +233,7 @@ which is called a prompt. For Squaak, we'd like to see the following when
 running in interactive mode (of course you can change this according to your
 personal taste):
 
- $ ../../parrot squaak.pbc
+ $ ./installable_squaak
  Squaak for Parrot VM.
  >
 

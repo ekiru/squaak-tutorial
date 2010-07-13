@@ -119,9 +119,7 @@ and C<42>), and so on. Later we shall discuss the various PAST nodes in more
 detail.
 
 Now, you might wonder, at which point exactly is this PAST construction
-happening? This is where the special {*} symbol comes in, just below the string
-'if' in the if_statement rule shown above. These special markers indicate that a
-parse action should be invoked. Such a parse action is just a method that has
+happening? At the end of a successfully matching rule, the rule's parse action is performed. Such a parse action is just a method that has
 the same name as the rule in which it is written (in this case: if_statement).
 So, during the parsing phase, several parse actions are executed, each of which
 builds a piece of the total PAST representing the input string. More on this

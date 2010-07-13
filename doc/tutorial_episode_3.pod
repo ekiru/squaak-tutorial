@@ -302,12 +302,16 @@ representation of the match object ($/). For now, you can set the scope to
 
 =item 4.
 
+Write the action method for expression. If the integer_constant subrule matched, retrieve its result object; otherwise, retrieve the string_constant subrule's result object.
+
+=item 5.
+
 Write the action method for assignment. Retrieve the result objects for
 "primary" and for "expression", and create a PAST::Op node that binds the
 expression to the primary. (Check out pdd26 for PAST::Op node types, and find
 out how you do such a binding).
 
-=item 5.
+=item 6.
 
 Run your compiler on a script or in interactive mode. Use the target option to
 see what PIR is being generated on the input "x = 42".

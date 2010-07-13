@@ -23,7 +23,7 @@ token ws {
 
 rule statementlist { [ <statement> | <?> ] ** ';' }
 
-proto rule statement {...}
+proto rule statement { <...> }
 
 rule statement:sym<assignment> { 
     <primary> '=' <expression>

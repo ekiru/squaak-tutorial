@@ -61,7 +61,7 @@ The first statement we're going to implement now is the if-statement. An
 if-statement has typically three parts (but this of course depends on the
 programming language): a conditional expression, a "then" part and an "else"
 part. Implementing this in Perl 6 rules and PAST is almost trivial, but first, let's add a little infrastructure to simplify adding new statement types. Replace the statement rule with the following:
-    proto rule statement {...}
+    proto rule statement { <...> }
 
 Delete the statement method from Action.pm, and rename the assignment rule in both Grammar.pm and Actions.pm to statement:sym<assignment>. The new statement rule is a "proto" rule. A proto rule is equivalent to a normal rule whose body contains each specialization of the rule separated by the | operator. The name of a particular specialization of a proto rule is placed between the angle brackets. Within the body of the rule, it can be matched literally with <sym>.
 

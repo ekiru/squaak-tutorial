@@ -152,8 +152,8 @@ you'll be able to assign simple values to (global) variables. It ain't much, but
 it's a very important first step. Once these basics are in place, you'll notice
 that adding a certain syntactic construct becomes a matter of minutes.
 
-First, open your editor and open the files F<src/parser/grammar.pg> and
-F<src/parser/actions.pm>. The former implements the parser using Perl 6 rules,
+First, open your editor and open the files F<src/Squaak/Grammar.pm> and
+F<src/Squaak/Actions.pm>. The former implements the parser using Perl 6 rules,
 and the latter contains the parse actions, which are executed during the parsing
 stage.
 

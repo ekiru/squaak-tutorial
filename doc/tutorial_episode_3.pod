@@ -228,23 +228,20 @@ you know for sure your parser doesn't accept input that it shouldn't.
 Now we have implemented the initial version of the Squaak grammar, it's time to
 implement the parse actions we mentioned before. The actions are written in a
 file called F<src/Squaak/Actions.pm>. If you look at the methods in this file,
-here and there you'll see that the match object ($/) , or rather, hash fields of
-it (like $<statement>) is evaluated in scalar context, by writing "$( ... )".
-As mentioned in Synopsis 5, evaluating a Match object in scalar context returns
-its result object. Normally the result object is the matched portion of the
-source text, but the special make function can be used to set the result object
-to some other value.
+here and there you'll see that the C<ast> method being called on the match object ($/) , or rather, hash fields of
+it (like $<statement>).
+The special make function can be used to set the ast to a value.
 This means that each node in the parse tree (a Match object) can also hold its
 PAST representation. Thus we use the make function to set the PAST
-representation of the current node in the parse tree, and later use the $( ... )
-operator to retrieve the PAST representation from it.
+representation of the current node in the parse tree, and later use the C<ast>
+method to retrieve the PAST representation from it.
 
 In recap, the match object ($/) and any subrules of it (for instance
 $<statement>) represent the parse tree; of course, $<statement>
 represents only the parse tree what the $<statement> rule matched. So, any
 action method has access to the parse tree that the equally named grammar rule
-matched, as the match object is always passed as an argument. Evaluating a parse
-tree in scalar context yields the PAST representation (obviously, this PAST
+matched, as the match object is always passed as an argument. Calling the C<ast> method 
+on a parse tree yields the PAST representation (obviously, this PAST
 object should be set using the make function).
 
 If you're following this tutorial, I highly advise you to get your feet wet, and

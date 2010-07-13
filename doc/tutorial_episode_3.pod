@@ -325,8 +325,7 @@ see what PIR is being generated on the input "x = 42".
 =item * Help! I get the error message "no result object".
 
 This means that the result object was not set properly (duh!).
-Make sure each action method is invoked (check each rule for a "{*}" marker),
-and that there is an action method for that rule, and that "make" is used to set
+Make sure there is an action method for that rule and that "make" is used to set
 the appropriate PAST node. Note that not all rules have action methods, for
 instance the C<keyword> rule (there's no point in that).
 

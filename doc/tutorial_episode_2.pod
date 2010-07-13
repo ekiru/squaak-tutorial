@@ -24,7 +24,7 @@ file, or invoke the compiler without a command line argument, in which case our
 compiler enters the interactive mode. Consider the first case, passing the file
 test.sq, just as we did before:
 
- $ ../../parrot squaak.pbc test.sq
+ $ ./installable_squeak test.sq
 
 When invoking our compiler like this, the file test.sq is compiled and the
 generated code (bytecode) is executed immediately by Parrot. How does this work,
@@ -50,7 +50,7 @@ four default compilation phases of an HLLCompiler object:
 This is an example of using the target option set to "parse", which will print
 the parse tree of the input to stdout:
 
- $ ../../parrot squaak.pbc --target=parse test.sq
+ $ ./installable_squeak --target=parse test.sq
 
 In interactive mode, giving this input:
 

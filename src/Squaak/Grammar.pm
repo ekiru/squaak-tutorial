@@ -23,17 +23,14 @@ token ws {
 
 rule statementlist { [ <statement> | <?> ] ** ';' }
 
-rule statement {
-    | <assignment>   #= assignment
-    | <if_statement> #= if_statement
-}
+proto rule statement {...}
 
-rule assignment { 
+rule statement:sym<assignment> { 
     <primary> '=' <expression>
 }
 
-rule if_statement {
-    'if' <expression> 'then' <block>
+rule statement:sym<if> {
+    <sym> <expression> 'then' <block>
     ['else' $<else>=<block> ]?
     'end'
 }

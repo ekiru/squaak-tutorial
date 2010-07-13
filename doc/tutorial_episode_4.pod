@@ -167,7 +167,7 @@ implies the following order:
 
 =back
 
-As you can see, PAST nodes are created in the leafs of the parse tree first,
+As you can see, PAST nodes are created in the leaves of the parse tree first,
 so that later, action methods higher in the parse tree can retrieve them.
 
 =head2 Throwing Exceptions

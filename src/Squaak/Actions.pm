@@ -10,17 +10,23 @@ method statementlist($/) {
     make $past;
 }
 
-method statement($/, $key) {
-    # get the field stored in key from the $/ object,
-    # and retrieve the result object from that field.
-    make $/{$key}.ast;
-}
-
-method assignment($/) {
+method statement:sym<assignment>($/) {
     my $lhs := $<primary>.ast;
     my $rhs := $<expression>.ast;
     $lhs.lvalue(1);
     make PAST::Op.new($lhs, $rhs, :pasttype<bind>, :node($/));
+}
+
+method statement:sym<if>($/) {
+    my $cond := $<expression>.ast;
+    my $then := $<block>.ast;
+    my $past := PAST::Op.new( $cond, $then,
+                              :pasttype('if'),
+                              :node($/) );
+    if $<else> {
+        $past.push($<else>[0].ast);
+    }
+    make $past;
 }
 
 method block($/) {
@@ -35,18 +41,6 @@ method block($/) {
     # object to the block
     for $<statement> {
         $past.push($_.ast) ;
-    }
-    make $past;
-}
-
-method if_statement($/) {
-    my $cond := $<expression>.ast;
-    my $then := $<block>.ast;
-    my $past := PAST::Op.new( $cond, $then,
-                              :pasttype('if'),
-                              :node($/) );
-    if $<else> {
-        $past.push($<else>[0].ast);
     }
     make $past;
 }

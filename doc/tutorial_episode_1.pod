@@ -182,7 +182,7 @@ This first episode of this tutorial is mainly an overview of what will be
 coming. Hopefully you now have a global idea of what the Parrot Compiler Tools
 are, and how they can be used to build a compiler targeting Parrot. If you want
 to check out some serious usage of the PCT, check out Rakudo (Perl 6 on Parrot)
-in languages/perl6 or Pynie (Python on Parrot) in languages/pynie.
+at http://rakudo.org/ or Pynie (Python on Parrot) at http://code.google.com/p/pynie/ .
 
 The next episodes will focus on the step-by-step implementation of our language,
 including the following topics:

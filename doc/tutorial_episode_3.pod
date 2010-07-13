@@ -222,8 +222,6 @@ identifier such as "forloop" would wrongly be disqualified, because the part
 matched), the string "forloop" cannot be matched as an identifier. The required
 presence of the word boundary prevents this.
 
-The last two rules are the C<term:sym<integer_constant> > and C<term:sym<string_constant> > tokens. Their names have a different form from our other rules. They are specializations of the C<proto> token term. A proto rule is equivalent to a normal rule whose body consists of each specialization of the rule separated by the C<|> operator. The name of a particular specialization of a proto rule is placed between the angle brackets. Within the body of the rule, it can be matched literally with C<<sym>>.
-
 =head2 Testing the Parser
 
 It is useful to test the parser before writing any action methods. This can save

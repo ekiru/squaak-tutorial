@@ -11,26 +11,27 @@ method statementlist($/) {
 }
 
 method statement($/) {
-    make $<statement_control> ?? $<statement_control>.ast !! $<EXPR>.ast;
+    make $<assignment>.ast;
 }
 
-method statement_control:sym<say>($/) {
-    my $past := PAST::Op.new( :name<say>, :pasttype<call>, :node($/) );
-    for $<EXPR> { $past.push( $_.ast ); }
-    make $past;
+method assignment($/) {
+    make PAST::Op.new(:pasttype<bind>, $<primary>.ast, $<expression>.ast);
 }
 
-method statement_control:sym<print>($/) {
-    my $past := PAST::Op.new( :name<print>, :pasttype<call>, :node($/) );
-    for $<EXPR> { $past.push( $_.ast ); }
-    make $past;
+method primary($/) {
+    make $<identifier>.ast;
 }
 
-method term:sym<integer>($/) { make $<integer>.ast; }
-method term:sym<quote>($/) { make $<quote>.ast; }
+method identifier($/) {
+    make PAST::Var.new(:name(~$/), :scope<package>);
+}
+
+method expression($/) {
+    make $<integer_constant> ?? $<integer_constant>.ast !! $<string_constant>.ast;
+}
+
+method integer_constant($/) { make $<integer>.ast; }
+method string_constant($/) { make $<quote>.ast; }
 
 method quote:sym<'>($/) { make $<quote_EXPR>.ast; }
 method quote:sym<">($/) { make $<quote_EXPR>.ast; }
-
-method circumfix:sym<( )>($/) { make $<EXPR>.ast; }
-

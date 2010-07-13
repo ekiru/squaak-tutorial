@@ -23,7 +23,7 @@ method primary($/) {
 }
 
 method identifier($/) {
-    make PAST::Var.new(:name(~$/), :scope<package>);
+    make PAST::Var.new(:name(~$/), :scope<package>, :node($/));
 }
 
 method expression($/) {

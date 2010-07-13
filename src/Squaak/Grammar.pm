@@ -51,6 +51,11 @@ token keyword {
     |'not'|'or'   |'sub'  |'throw'|'try' |'var'|'while']>>
 }
 
+rule expression {
+    | <integer_constant>
+    | <string_constant>
+}
+
 token integer_constant { <integer> }
 token string_constant { <quote> }
 

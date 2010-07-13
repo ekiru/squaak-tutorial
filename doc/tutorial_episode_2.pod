@@ -104,7 +104,6 @@ a certain part of the match. For instance, this rule:
 
  rule if_statement {
      'if' <expression> 'then' <statement> 'end'
-     {*}
  }
 
 has two other subrules: expression and statement. The match object for the rule

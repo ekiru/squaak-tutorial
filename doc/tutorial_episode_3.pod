@@ -360,8 +360,7 @@ the end of Episode 2, and the latter didn't have any coding assignments).
 =item 1
 
 Rename the names of the action methods according to the name changes we made
-on the grammar rules. So, "integer" becomes "integer_constant", "value" becomes
-"expression", and so on.
+on the grammar rules. So, "integer" becomes "integer_constant", and so on.
 
 I assume you don't need any help with this.
 

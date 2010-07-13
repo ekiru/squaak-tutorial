@@ -27,14 +27,9 @@ rule statement {
     <assignment>
 }
 
-proto token statement_control { <...> }
-
 rule assignment { 
     <primary> '=' <expression>
 }
-
-rule statement_control:sym<say>   { <sym> [ <EXPR> ] ** ','  }
-rule statement_control:sym<print> { <sym> [ <EXPR> ] ** ','  }
 
 ## Terms
 
@@ -62,18 +57,3 @@ token string_constant { <quote> }
 proto token quote { <...> }
 token quote:sym<'> { <?[']> <quote_EXPR: ':q'> }
 token quote:sym<"> { <?["]> <quote_EXPR: ':qq'> }
-
-## Operators
-
-INIT {
-    Squaak::Grammar.O(':prec<u>, :assoc<left>',  '%multiplicative');
-    Squaak::Grammar.O(':prec<t>, :assoc<left>',  '%additive');
-}
-
-token circumfix:sym<( )> { '(' <.ws> <EXPR> ')' }
-
-token infix:sym<*>  { <sym> <O('%multiplicative, :pirop<mul>')> }
-token infix:sym</>  { <sym> <O('%multiplicative, :pirop<div>')> }
-
-token infix:sym<+>  { <sym> <O('%additive, :pirop<add>')> }
-token infix:sym<->  { <sym> <O('%additive, :pirop<sub>')> }

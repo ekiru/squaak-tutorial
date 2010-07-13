@@ -176,12 +176,11 @@ The grammar rule for the "throw" statement is really quite easy, but it's useful
 to discuss the parse action, as it shows the use of generating custom PIR
 instructions. First the grammar rule:
 
-    rule throw_statement {
-        'throw' <expression>
-        {*}
+    rule statement:sym<throw> {
+        <sym> <expression>
     }
 
-I assume you know how to update the "statement" rule by now. The throw statement
+The throw statement
 will compile down to Parrot's "throw" instruction, which takes one argument.
 In order to generate a custom Parrot instruction, the instruction can be
 specified in the C<:pirop> attribute when creating a C<PAST::Op> node. Any child

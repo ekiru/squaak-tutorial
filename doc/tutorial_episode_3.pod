@@ -406,8 +406,8 @@ expression to the primary. (Check out pdd26 for C<PAST::Op> node types, and
 find out how you do such a binding).
 
  method assignment($/) {
-     my $lhs := $( $<primary> );
-     my $rhs := $( $<expression> );
+     my $lhs := $<primary>.ast;
+     my $rhs := $<expression>.ast;
      $lhs.lvalue(1);
      make PAST::Op.new( $lhs, $rhs, :pasttype('bind'), :node($/) );
  }

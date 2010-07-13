@@ -24,7 +24,8 @@ token ws {
 rule statementlist { [ <statement> | <?> ] ** ';' }
 
 rule statement {
-    <assignment>
+    | <assignment>   #= assignment
+    | <if_statement> #= if_statement
 }
 
 rule assignment { 
@@ -35,6 +36,10 @@ rule if_statement {
     'if' <expression 'then' <block>
     ['else' $<else>=<block> ]?
     'end'
+}
+
+rule block {
+    <statement>*
 }
 
 ## Terms

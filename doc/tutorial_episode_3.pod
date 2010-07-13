@@ -209,17 +209,7 @@ identifier such as "forloop" would wrongly be disqualified, because the part
 matched), the string "forloop" cannot be matched as an identifier. The required
 presence of the word boundary prevents this.
 
-The last rule is C<expression>. An expression is either a string-constant or an
-integer-constant. Either way, an action is executed. However, when the action is
-executed, it does not know what the parser matched; was it a string-constant, or
-an integer-constant? Of course, the match object can be checked, but consider
-the case where you have 10 alternatives, then doing 9 checks only to find out
-the last alternative was matched is somewhat inefficient (and adding new
-alternatives requires you to update this check). That's why you see the special
-comments starting with a "#=" character. Using this notation, you can specify a
-key, which will be passed as a second argument to the action method. As we will
-see, this allows us to write very simple and efficient action methods for rules
-such as expression. (Note there's a space between the C<#=> and the key's name).
+The last two rules are the C<term:sym<integer_constant> > and C<term:sym<string_constant> > tokens. Their names have a different form from our other rules. They are specializations of the C<proto> token term. A proto rule is equivalent to a normal rule whose body consists of each specialization of the rule separated by the C<|> operator. The name of a particular specialization of a proto rule is placed between the angle brackets. Within the body of the rule, it can be matched literally with C<<sym>>.
 
 =head2 Testing the Parser
 

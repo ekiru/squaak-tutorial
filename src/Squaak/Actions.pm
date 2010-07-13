@@ -10,8 +10,10 @@ method statementlist($/) {
     make $past;
 }
 
-method statement($/) {
-    make $<assignment>.ast;
+method statement($/, $key) {
+    # get the field stored in key from the $/ object,
+    # and retrieve the result object from that field.
+    make $/{$key}.ast;
 }
 
 method assignment($/) {
@@ -20,6 +22,34 @@ method assignment($/) {
     $lhs.lvalue(1);
     make PAST::Op.new($lhs, $rhs, :pasttype<bind>, :node($/));
 }
+
+method block($/) {
+    # create a new block, set its type to 'immediate',
+    # meaning it is potentially executed immediately
+    # (as opposed to a declaration, such as a
+    # subroutine definition).
+    my $past := PAST::Block.new( :blocktype('immediate'),
+                                 :node($/) );
+
+    # for each statement, add the result
+    # object to the block
+    for $<statement> {
+        $past.push($_.ast) ;
+    }
+    make $past;
+}
+
+    method if_statement($/) {
+        my $cond := $<expression>.ast;
+        my $then := $<block>.ast;
+        my $past := PAST::Op.new( $cond, $then,
+                                  :pasttype('if'),
+                                  :node($/) );
+        if $<else> {
+            $past.push($<else>[0].ast);
+        }
+        make $past;
+    }
 
 method primary($/) {
     make $<identifier>.ast;

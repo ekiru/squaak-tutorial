@@ -122,11 +122,10 @@ with the make function.
 
 At this point it's wise to spend a few words on the make function, the parse
 actions and how the whole PAST is created by the individual parse actions.
-Have another look at the action method if_statement. In the first two lines,
+Have another look at the action method statement:sym<if>. In the first two lines,
 we request the result objects for the conditional expression and the "then"
 block. When were these result objects created? How can we be sure they're there?
-The answer lies in the order in which the parse actions are executed. The
-special "{*}" symbol that triggers a parse action invocation, is usually placed
+The answer lies in the order in which the parse actions are executed. The parse action invocation usually occurs
 at the end of the rule. For this input string: "if 42 then x = 1 end" this
 implies the following order:
 

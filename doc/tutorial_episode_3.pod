@@ -142,6 +142,7 @@ will only be available to other statements within the same command (a command is
 a set of statements before you press enter). This has to do with the code
 generation by the PCT, and will be fixed at a later point. For now, just
 remember it doesn't work.
+# TODO(check whether this is still true)
 
 =head2 Let's get started!
 

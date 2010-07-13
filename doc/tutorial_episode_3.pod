@@ -157,7 +157,7 @@ F<src/Squaak/Actions.pm>. The former implements the parser using Perl 6 rules,
 and the latter contains the parse actions, which are executed during the parsing
 stage.
 
-In the file grammar.pg, you'll see the top-level rule, named C<TOP>. It's
+In the file Grammar.pm, you'll see the top-level rule, named C<TOP>. It's
 located at, ehm... the top. When the parser is invoked, it will start at this
 rule (a rule is nothing else than a method of the grammar class).
 When we generated this language (in the first episode), some default rules were

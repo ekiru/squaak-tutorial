@@ -31,6 +31,12 @@ rule assignment {
     <primary> '=' <expression>
 }
 
+rule if_statement {
+    'if' <expression 'then' <block>
+    ['else' $<else>=<block> ]?
+    'end'
+}
+
 ## Terms
 
 rule primary {

@@ -120,7 +120,7 @@ detail.
 
 Now, you might wonder, at which point exactly is this PAST construction
 happening? At the end of a successfully matching rule, the rule's parse action is performed. Such a parse action is just a method that has
-the same name as the rule in which it is written (in this case: if_statement).
+the same name as the rule which triggers it (in this case: if_statement).
 So, during the parsing phase, several parse actions are executed, each of which
 builds a piece of the total PAST representing the input string. More on this
 will be explained later.

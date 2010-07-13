@@ -208,22 +208,17 @@ implemented in Squaak.
 Last episode's exercise was to add a command line banner and prompt for the
 interactive mode of our compiler. Given the hints that were provided, it was
 probably not too hard to find the solution, which is shown below. This
-subroutine onload can be found in the file Squaak.pir. The relevant lines are
+INIT block can be found in the file src/Squaak/Compiler.pm. The relevant lines are
 marked with a comment
 
-  .sub 'onload' :anon :load :init
-      load_bytecode 'PCT.pbc'
+  INIT {
+      Squaak::Compiler.language('Squaak');
+      Squaak::Compiler.parsegrammar(Squaak::Grammar);
+      Squaak::Compiler.parseactions(Squaak::Actions);
 
-      $P0 = get_hll_global ['PCT'], 'HLLCompiler'
-      $P1 = $P0.'new'()
-      $P1.'language'('Squaak')
-      $P1.'parsegrammar'('Squaak::Grammar')
-      $P1.'parseactions'('Squaak::Grammar::Actions')
-
-      $P1.'commandline_banner'("Squaak for Parrot VM\n") ## set banner
-      $P1.'commandline_prompt'('> ')                     ## set prompt
-
-  .end
+      Squaak::Compiler.commandline_banner("Squaak for Parrot VM.\n"); # set banner
+      Squaak::Compiler.commandline_prompt('> '); # set prompt
+  }
 
 Starting in the next episode, the exercises will be more interesting. For now,
 it would be useful to browse around through the source files of the compiler,

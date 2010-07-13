@@ -227,7 +227,7 @@ you know for sure your parser doesn't accept input that it shouldn't.
 
 Now we have implemented the initial version of the Squaak grammar, it's time to
 implement the parse actions we mentioned before. The actions are written in a
-file called F<src/parser/actions.pm>. If you look at the methods in this file,
+file called F<src/Squaak/Actions.pm>. If you look at the methods in this file,
 here and there you'll see that the match object ($/) , or rather, hash fields of
 it (like $<statement>) is evaluated in scalar context, by writing "$( ... )".
 As mentioned in Synopsis 5, evaluating a Match object in scalar context returns

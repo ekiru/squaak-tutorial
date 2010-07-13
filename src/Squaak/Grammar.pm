@@ -24,14 +24,13 @@ token ws {
 rule statementlist { [ <statement> | <?> ] ** ';' }
 
 rule statement {
-    | <statement_control>
-    | <EXPR>
+    <assignment>
 }
 
 proto token statement_control { <...> }
 
-rule statement_control:sym<assignment> { 
-    <primary> '=' <EXPR>
+rule assignment { 
+    <primary> '=' <expression>
 }
 
 rule statement_control:sym<say>   { <sym> [ <EXPR> ] ** ','  }
@@ -52,8 +51,8 @@ token keyword {
     |'not'|'or'   |'sub'  |'throw'|'try' |'var'|'while']>>
 }
 
-token term:sym<integer_constant> { <integer> }
-token term:sym<string_constant> { <quote> }
+token integer_constant { <integer> }
+token string_constant { <quote> }
 
 proto token quote { <...> }
 token quote:sym<'> { <?[']> <quote_EXPR: ':q'> }

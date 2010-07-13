@@ -191,7 +191,7 @@ including the following topics:
 
 =item structure of PCT-based compilers
 
-=item using PGE rules to define the language grammar
+=item using NQP-rx rules to define the language grammar
 
 =item implementing operator precedence using an operator precedence table
 

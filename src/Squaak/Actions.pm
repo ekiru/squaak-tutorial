@@ -39,17 +39,17 @@ method block($/) {
     make $past;
 }
 
-    method if_statement($/) {
-        my $cond := $<expression>.ast;
-        my $then := $<block>.ast;
-        my $past := PAST::Op.new( $cond, $then,
-                                  :pasttype('if'),
-                                  :node($/) );
-        if $<else> {
-            $past.push($<else>[0].ast);
-        }
-        make $past;
+method if_statement($/) {
+    my $cond := $<expression>.ast;
+    my $then := $<block>.ast;
+    my $past := PAST::Op.new( $cond, $then,
+                              :pasttype('if'),
+                              :node($/) );
+    if $<else> {
+        $past.push($<else>[0].ast);
     }
+    make $past;
+}
 
 method primary($/) {
     make $<identifier>.ast;

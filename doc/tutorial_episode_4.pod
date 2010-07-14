@@ -188,8 +188,8 @@ nodes are passed as arguments to this instruction, so we need to pass the result
 object of the expression being thrown as a child of the C<PAST::Op> node
 representing the "throw" instruction.
 
-    method throw_statement($/) {
-        make PAST::Op.new( $( $<expression> ),
+    method statement:sym<throw>($/) {
+        make PAST::Op.new( $<expression>.ast,
                            :pirop('throw'),
                            :node($/) );
     }

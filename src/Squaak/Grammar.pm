@@ -35,6 +35,10 @@ rule statement:sym<if> {
     'end'
 }
 
+rule statement:sym<throw> {
+    <sym> <expression>
+}
+
 rule block {
     <statement>*
 }

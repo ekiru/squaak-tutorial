@@ -40,7 +40,7 @@ rule statement:sym<throw> {
 }
 
 rule statement:sym<while> {
-    <sym> <expression> 'do' <block> <end>
+    <sym> <expression> 'do' <block> 'end'
 }
 
 rule block {

@@ -36,7 +36,7 @@ method statement:sym<throw>($/) {
 }
 
 method statement:sym<while>($/) {
-    my $cond := $<expression>.;
+    my $cond := $<expression>.ast;
     my $body := $<block>.ast;
     make PAST::Op.new( $cond, $body, :pasttype('while'), :node($/) );
 }

@@ -255,7 +255,7 @@ C<PAST::Op> nodes you should create.
 The while-statement is straightforward:
 
  method statement:sym<while>($/) {
-     my $cond := $<expression>.;
+     my $cond := $<expression>.ast;
      my $body := $<block>.ast;
      make PAST::Op.new( $cond, $body, :pasttype('while'), :node($/) );
  }

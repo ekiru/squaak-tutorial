@@ -193,6 +193,7 @@ representing the "throw" instruction.
                            :pirop('throw'),
                            :node($/) );
     }
+TODO(replace this with something that works)
 
 
 =head2 What's Next?

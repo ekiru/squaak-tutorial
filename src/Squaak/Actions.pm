@@ -29,6 +29,12 @@ method statement:sym<if>($/) {
     make $past;
 }
 
+method statement:sym<throw>($/) {
+    make PAST::Op.new( $<expression>.ast,
+                       :pirop('throw'),
+                       :node($/) );
+}
+
 method block($/) {
     # create a new block, set its type to 'immediate',
     # meaning it is potentially executed immediately

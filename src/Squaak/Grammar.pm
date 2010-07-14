@@ -39,6 +39,10 @@ rule statement:sym<throw> {
     <sym> <expression>
 }
 
+rule statement:sym<while> {
+    <sym> <expression> 'do' <block> <end>
+}
+
 rule block {
     <statement>*
 }

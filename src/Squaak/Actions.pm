@@ -35,6 +35,12 @@ method statement:sym<throw>($/) {
                        :node($/) );
 }
 
+method statement:sym<while>($/) {
+    my $cond := $<expression>.;
+    my $body := $<block>.ast;
+    make PAST::Op.new( $cond, $body, :pasttype('while'), :node($/) );
+}
+
 method block($/) {
     # create a new block, set its type to 'immediate',
     # meaning it is potentially executed immediately

@@ -263,22 +263,20 @@ The while-statement is straightforward:
 The try-statement is a bit more complex. Here are the grammar rules and
 action methods.
 
- rule try_statement {
-     'try' $<try>=<block>
+ rule statement:sym<try> {
+     <sym> $<try>=<block>
      'catch' <exception>
      $<catch>=<block>
      'end'
-     {*}
  }
 
  rule exception {
      <identifier>
-     {*}
  }
 
- method try_statement($/) {
+ method statement:sym<try>($/) {
      ## get the try block
-     my $try := $( $<try> );
+     my $try := $<try>.ast;
 
      ## create a new PAST::Stmts node for
      ## the catch block; note that no
@@ -287,12 +285,12 @@ action methods.
      ## exception object. For now this will
      ## do.
      my $catch := PAST::Stmts.new( :node($/) );
-     $catch.push( $( $<catch> ) );
+     $catch.push($<catch>.ast);
 
      ## get the exception identifier;
      ## set a declaration flag, the scope,
      ## and clear the viviself attribute.
-     my $exc := $( $<exception> );
+     my $exc := $<exception>.ast;
      $exc.isdecl(1);
      $exc.scope('lexical');
      $exc.viviself(0);
@@ -312,7 +310,7 @@ action methods.
 
  method exception($/) {
      our $?BLOCK;
-     my $past := $( $<identifier> );
+     my $past := $<identifier>.ast;
      $?BLOCK.symbol( $past.name(), :scope('lexical') );
      make $past;
  }

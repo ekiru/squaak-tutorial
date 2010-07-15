@@ -35,6 +35,47 @@ method statement:sym<throw>($/) {
                        :node($/) );
 }
 
+method statement:sym<try>($/) {
+    ## get the try block
+    my $try := $<try>.ast;
+
+    ## create a new PAST::Stmts node for
+    ## the catch block; note that no
+    ## PAST::Block is created, as this
+    ## currently has problems with the
+    ## exception object. For now this will
+    ## do.
+    my $catch := PAST::Stmts.new( :node($/) );
+    $catch.push($<catch>.ast);
+
+    ## get the exception identifier;
+    ## set a declaration flag, the scope,
+    ## and clear the viviself attribute.
+    my $exc := $<exception>.ast;
+    $exc.isdecl(1);
+    $exc.scope('lexical');
+    $exc.viviself(0);
+    ## generate instruction to retrieve the exception object (and the
+    ## exception message, that is passed automatically in PIR, this is stored
+    ## into $S0 (but not used).
+    my $pir := "    .get_results (\%r, \$S0)\n"
+             ~ "    store_lex '" ~ $exc.name()
+             ~ "', \%r";
+
+    $catch.unshift( PAST::Op.new( :inline($pir), :node($/) ) );
+
+    ## do the declaration of the exception object as a lexical here:
+    $catch.unshift( $exc );
+    make PAST::Op.new( $try, $catch, :pasttype('try'), :node($/) );
+}
+
+method exception($/) {
+    our $?BLOCK;
+    my $past := $<identifier>.ast;
+    $?BLOCK.symbol( $past.name(), :scope('lexical') );
+    make $past;
+}
+
 method statement:sym<while>($/) {
     my $cond := $<expression>.ast;
     my $body := $<block>.ast;

@@ -39,6 +39,17 @@ rule statement:sym<throw> {
     <sym> <expression>
 }
 
+rule statement:sym<try> {
+    <sym> $<try>=<block>
+    'catch' <exception>
+    $<catch>=<block>
+    'end'
+}
+
+rule exception {
+    <identifier>
+}
+
 rule statement:sym<while> {
     <sym> <expression> 'do' <block> 'end'
 }

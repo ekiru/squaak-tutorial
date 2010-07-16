@@ -69,9 +69,7 @@ method statement:sym<try>($/) {
 }
 
 method exception($/) {
-    our $?BLOCK;
     my $past := $<identifier>.ast;
-    $?BLOCK.symbol( $past.name(), :scope('lexical') );
     make $past;
 }
 

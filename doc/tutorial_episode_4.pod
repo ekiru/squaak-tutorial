@@ -356,41 +356,52 @@ generated, and see if you can recognize which instructions make up the
 conditional expression, which represent the "then" block, and which represent
 the "else" block (if any).
 
+Note that this may not be the exact result produced when you try it. Sub ids, block numbers, and register numbers may differ, but it should be analogous.
+
   > if 1 then else end
 
+  .HLL "squaak"
+
   .namespace []
-  .sub "_block16"
-    new $P18, "Integer"
-    assign $P18, 1
-
-    ## this is the condition:
-    if $P18, if_17
-
-    ## this is invoking the else-block:
-    get_global $P21, "_block19"
-    newclosure $P21, $P21
-    $P20 = $P21()
-    set $P18, $P20
-    goto if_17_end
-
-    ## this is invoking the then-block:
-    if_17:
-    get_global $P24, "_block22"
-    newclosure $P24, $P24
-    $P23 = $P24()
-    set $P18, $P23
-    if_17_end:
-    .return ($P18)
+  .sub "_block11"  :anon :subid("10_1279319328.02043")
+  .annotate 'line', 0
+      .const 'Sub' $P20 = "12_1279319328.02043" 
+      capture_lex $P20
+      .const 'Sub' $P17 = "11_1279319328.02043" 
+      capture_lex $P17
+  .annotate 'line', 1
+      set $I15, 1
+      if $I15, if_14
+      .const 'Sub' $P20 = "12_1279319328.02043" 
+      capture_lex $P20
+      $P21 = $P20()
+      set $P13, $P21
+      goto if_14_end
+    if_14:
+      .const 'Sub' $P17 = "11_1279319328.02043" 
+      capture_lex $P17
+      $P18 = $P17()
+      set $P13, $P18
+    if_14_end:
+      .return ($P13)
   .end
 
-  .namespace []
-  .sub "_block22" :outer("_block16")
-    .return ()
-  .end
+
+  .HLL "squaak"
 
   .namespace []
-  .sub "_block19" :outer("_block16")
-    .return ()
+  .sub "_block19"  :anon :subid("12_1279319328.02043") :outer("10_1279319328.02043")
+  .annotate 'line', 1
+      .return ()
+  .end
+
+
+  .HLL "squaak"
+
+  .namespace []
+  .sub "_block16"  :anon :subid("11_1279319328.02043") :outer("10_1279319328.02043")
+  .annotate 'line', 1
+      .return ()
   .end
 
 =back

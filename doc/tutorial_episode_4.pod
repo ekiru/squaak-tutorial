@@ -308,16 +308,9 @@ action methods.
  }
 
  method exception($/) {
-     our $?BLOCK;
      my $past := $<identifier>.ast;
-     $?BLOCK.symbol( $past.name(), :scope('lexical') );
      make $past;
  }
-
-Instead of putting "identifier" after the "catch" keyword, we made it a
-separate rule, with its own action method. This allows us to insert the
-identifier into the symbol table of the current block (the try-block),
-before the catch block is parsed.
 
 First the PAST node for the try block is retrieved. Then, the catch block is
 retrieved, and stored into a C<PAST::Stmts> node. This is needed, so that we

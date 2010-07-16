@@ -66,7 +66,7 @@ part. Implementing this in Perl 6 rules and PAST is almost trivial, but first, l
 Delete the statement method from Action.pm, and rename the assignment rule in both Grammar.pm and Actions.pm to statement:sym<assignment>. The new statement rule is a "proto" rule. A proto rule is equivalent to a normal rule whose body contains each specialization of the rule separated by the | operator. The name of a particular specialization of a proto rule is placed between the angle brackets. Within the body of the rule, it can be matched literally with <sym>.
 
     rule statement:sym<if> {
-        <sym> <expression> 'then' <block>
+        <sym> <expression> 'then' $<then>=<block>
         ['else' $<else>=<block> ]?
         'end'
     }
@@ -75,7 +75,7 @@ Delete the statement method from Action.pm, and rename the assignment rule in bo
         <statement>*
     }
 
-Note that the optional else block is stored in the match object's "else" field.
+Note that the optional else block is stored in the match object's "else" field, and the then block is stored in the match object's "then" field.
 If we hadn't written this $<else>= part, then <block> would have been an array,
 with block[0] the "then" part, and block[1] the optional else part. Assigning
 the optional else block to a different field, makes the action method slightly
@@ -101,8 +101,7 @@ Note that the proto declaration for statement means that the result object for  
 
     method statement:sym<if>($/) {
         my $cond := $<expression>.ast;
-        my $then := $<block>.ast;
-        my $past := PAST::Op.new( $cond, $then,
+        my $past := PAST::Op.new( $cond, $<then>.ast,
                                   :pasttype('if'),
                                   :node($/) );
         if $<else> {

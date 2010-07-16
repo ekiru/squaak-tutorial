@@ -30,7 +30,7 @@ rule statement:sym<assignment> {
 }
 
 rule statement:sym<if> {
-    <sym> <expression> 'then' <block>
+    <sym> <expression> 'then' $<then>=<block>
     ['else' $<else>=<block> ]?
     'end'
 }

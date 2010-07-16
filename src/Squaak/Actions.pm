@@ -19,8 +19,7 @@ method statement:sym<assignment>($/) {
 
 method statement:sym<if>($/) {
     my $cond := $<expression>.ast;
-    my $then := $<block>.ast;
-    my $past := PAST::Op.new( $cond, $then,
+    my $past := PAST::Op.new( $cond, $<then>.ast,
                               :pasttype('if'),
                               :node($/) );
     if $<else> {

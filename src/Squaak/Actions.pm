@@ -1,7 +1,17 @@
 class Squaak::Actions is HLL::Actions;
 
+method begin_TOP ($/) {
+    our $?BLOCK := PAST::Block.new(:blocktype<declaration>, :node($/),
+                                   :hll<squaak>);
+    our @?BLOCK;
+    @?BLOCK.unshift($?BLOCK);
+}
+
 method TOP($/) {
-    make PAST::Block.new( $<statementlist>.ast , :hll<squaak>, :node($/) );
+    our @?BLOCK;
+    my $past := @?BLOCK.shift();
+    $past.push($<statementlist>.ast);
+    make $past;
 }
 
 method statementlist($/) {

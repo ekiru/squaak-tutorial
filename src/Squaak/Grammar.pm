@@ -6,7 +6,12 @@ This is the grammar for Squaak in Perl 6 rules.
 
 grammar Squaak::Grammar is HLL::Grammar;
 
+token begin_TOP {
+    <?>
+}
+
 token TOP {
+    <.begin_TOP>
     <statementlist>
     [ $ || <.panic: "Syntax error"> ]
 }

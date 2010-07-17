@@ -30,9 +30,8 @@ For each individual scope, there's a separate symbol table.
 
 Squaak has a so-called do-block statement, that is defined below.
 
- rule do_block {
-     'do' <block> 'end'
-     {*}
+ rule statement:sym<do> {
+     <sym> <block> 'end'
  }
 
 Each do-block defines a new scope; local variables declared between the C<do>

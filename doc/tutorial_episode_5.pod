@@ -219,19 +219,19 @@ use the scope stack, let's have a look at its implementation.
 
 Now, we set up the necessary infrastructure to store the current scope block,
 and we created a datastructure that acts as a scope stack, which we will need
-later. We'll now go back to the parse action for variable_declaration, because
+later. We'll now go back to the parse action for statement:sym<var>, because
 we didn't enter the declared variable into the current block's symbol table yet.
 We'll see how to do that now.
 First, we need to make the current block accessible from the method
-variable_declaration. We've already seen how to do that, using the "our"
+statement:sym<var>. We've already seen how to do that, using the "our"
 keyword. It doesn't really matter where in the action method we enter the
 symbol's name into the symbol table, but let's do it at the end, after the
 initialization stuff. Naturally, we're only going to enter the symbol if it's
 not there already; duplicate variable declarations (in the same scope) should
 result in an error message (using the panic method of the match object).
-The code to be added to the method variable_declaration looks then like this:
+The code to be added to the method statement:sym<var> looks then like this:
 
- method variable_declaration($/) {
+ method statement:sym<var>($/) {
      our $?BLOCK;
      # get the PAST node for identifier
      # set the scope and declaration flag

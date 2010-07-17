@@ -73,6 +73,29 @@ method exception($/) {
     make $past;
 }
 
+method statement:sym<var>($/) {
+    # get the PAST for the identifier
+    my $past := $<identifier>.ast;
+
+    # this is a local (it's being defined)
+    $past.scope('lexical');
+
+    # set a declaration flag
+    $past.isdecl(1);
+
+    # check for the initialization expression
+    if $<expression> {
+        # use the viviself clause to add a
+        # an initialization expression
+        $past.viviself($<expression>[0].ast);
+    }
+    else { # no initialization, default to "Undef"
+        $past.viviself('Undef');
+    }
+
+    make $past;
+}
+
 method statement:sym<while>($/) {
     my $cond := $<expression>.ast;
     my $body := $<block>.ast;

@@ -29,6 +29,10 @@ rule statement:sym<assignment> {
     <primary> '=' <expression>
 }
 
+rule statement:sym<do> {
+    <sym> <block> 'end'
+}
+
 rule statement:sym<if> {
     <sym> <expression> 'then' $<then>=<block>
     ['else' $<else>=<block> ]?

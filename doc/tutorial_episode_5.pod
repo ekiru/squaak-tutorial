@@ -215,67 +215,6 @@ created in the first part of the method and unshifted on C<@?BLOCK>. Now this
 node can be used as the final result object of TOP. So, now we've seen how to
 use the scope stack, let's have a look at its implementation.
 
-=head2 A List Class
-
-We'll implement the scope stack as a C<ResizablePMCArray> object. This is a
-built-in PMC type. However, this built-in PMC does not have any methods; in
-PIR it can only be used as an operand of the built-in shift and unshift
-instructions. In order to allow us to write this as method calls, we create a
-new subclass of ResizablePMCArray. The code below creates the new class and
-defines the methods we need.
-
- 1 .namespace []
-
- 2 .sub 'initlist' :anon :init :load
- 3   subclass $P0, 'ResizablePMCArray', 'List'
- 4   new $P1, 'List'
- 5   set_hll_global ['Squaak';'Grammar';'Actions'], '@?BLOCK', $P1
- 6 .end
-
- 7 .namespace ['List']
-
- 8 .sub 'unshift' :method
- 9   .param pmc obj
- 10   unshift self, obj
- 11 .end
-
- 12 .sub 'shift' :method
- 13   shift $P0, self
- 14   .return ($P0)
- 15 .end
-
-Well, here you have it: part of the small amount of PIR code you need to write
-for the Squaak compiler (there's some more for some built-in subroutines, more
-on that later). Let's discuss this code snippet in more detail (if you know
-PIR, you could skip this section).
-Line 1 resets the namespace to the root namespace in Parrot, so that the sub
-C<initlist> is stored in that namespace. The sub 'initlist' defined in lines
-2-6 has some flags: C<:anon> means that the sub is not stored by name in the
-namespace, implying it cannot be looked up by name. The :init flag means that
-the sub is executed before the main program (the "main" sub) is executed. The
-C<:load> flag makes sure that the sub is executed if this file was compiled and
-loaded by another file through the load_bytecode instruction. If you don't
-understand this, no worries. You can forget about it now. In any case, we know
-for sure there's a List class when we need it, because the class creation is
-done before running the actual compiler code.
-Line 3 creates a new subclass of ResizablePMCArray, called "List". This results
-in a new class object, which is left in register $P0, but it's not used after
-that.
-Line 4 creates a new List object, and stores it in register $P1. Line 5,
-stores this List object by name of C<@?BLOCK> (that name should ring a bell
-now...) in the namespace of the Actions class. The semicolons in between the
-several key strings indicate nested namespaces. So, lines 4 and 5 are important,
-because the create the @?BLOCK variable and store it in a place that can be
-accessed from the action methods in the Actions class.
-Lines 7-11 define the unshift method, which is a method in the "List" namespace.
-This means that it can be invoked as a method on a List object. As the sub is
-marked with the :method flag, the sub has an implicit first parameter called
-"self", which refers to the invocant object. The unshift method invokes
-Parrot's unshift instruction on self, passing the obj argument as the second
-operand. So, obj is unshifted onto self, which is the List object itself.
-Finally, lines 12-15 define the "shift" method, which does the opposite of
-"unshift", removing the first element and returning it to its caller.
-
 =head2 Storing Symbols
 
 Now, we set up the necessary infrastructure to store the current scope block,

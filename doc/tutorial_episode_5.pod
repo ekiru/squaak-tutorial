@@ -102,9 +102,9 @@ initialization expression. If the latter is missing, the variable's value
 defaults to the undefined value called "Undef". Let's see what the parse action
 looks like:
 
- method variable_declaration($/) {
+ method statement:sym<var>($/) {
      # get the PAST for the identifier
-     my $past := $( $<identifier> );
+     my $past := $<identifier>.ast;
 
      # this is a local (it's being defined)
      $past.scope('lexical');
@@ -116,7 +116,7 @@ looks like:
      if $<expression> {
          # use the viviself clause to add a
          # an initialization expression
-         $past.viviself( $( $<expression>[0] );
+         $past.viviself($<expression>[0].ast);
      }
      else { # no initialization, default to "Undef"
          $past.viviself('Undef');

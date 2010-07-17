@@ -93,9 +93,8 @@ The following is the grammar rule for variable declarations. This is a type of
 statement, so I assume you know how to extend the statement rule to allow for
 variable declarations.
 
- rule variable_declaration {
-     'var' <identifier> ['=' <expression>]?
-     {*}
+ rule statement:sym<var> {
+     <sym> <identifier> ['=' <expression>]?
  }
 
 A local variable is declared using the C<var> keyword, and has an optional

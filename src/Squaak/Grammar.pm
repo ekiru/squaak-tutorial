@@ -54,6 +54,10 @@ rule exception {
     <identifier>
 }
 
+rule statement:sym<var> {
+    <sym> <identifier> ['=' <expression>]?
+}
+
 rule statement:sym<while> {
     <sym> <expression> 'do' <block> 'end'
 }

@@ -84,6 +84,7 @@ method exception($/) {
 }
 
 method statement:sym<var>($/) {
+    our $?BLOCK;
     # get the PAST for the identifier
     my $past := $<identifier>.ast;
 
@@ -103,6 +104,15 @@ method statement:sym<var>($/) {
         $past.viviself('Undef');
     }
 
+    my $name := $past.name();
+
+    if $?BLOCK.symbol( $name ) {
+        # symbol is already present
+        $/.panic("Error: symbol " ~ $name ~ " was already defined.\n");
+    }
+    else {
+        $?BLOCK.symbol( $name, :scope('lexical') );
+    }
     make $past;
 }
 

@@ -44,6 +44,16 @@ rule statement:sym<if> {
     'end'
 }
 
+rule statement:sym<sub> {
+    <sym> <identifier> <parameters>
+    <statement>*
+    'end'
+}
+
+rule parameters {
+   '(' [<identifier> ** ',']? ')'
+}
+
 rule statement:sym<throw> {
     <sym> <expression>
 }

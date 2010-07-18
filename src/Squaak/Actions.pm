@@ -38,6 +38,48 @@ method statement:sym<if>($/) {
     make $past;
 }
 
+method statement:sym<sub>($/) {
+     our $?BLOCK;
+     our @?BLOCK;
+     my $past := $<parameters>.ast;
+     my $name := $<identifier>.ast;
+
+     # set the sub's name
+     $past.name($name.name);
+
+     # add all statements to the sub's body
+     for $<statement> {
+         $past.push($_.ast);
+     }
+
+     # and remove the block from the scope stack and restore the current block
+     @?BLOCK.shift();
+     $?BLOCK := @?BLOCK[0];
+     make $past;
+}
+
+method parameters($/) {
+    our $?BLOCK;
+    our @?BLOCK;
+    my $past := PAST::Block.new( :blocktype('declaration'), :node($/) );
+
+    # now add all parameters to this block
+    for $<identifier> {
+        my $param := $_.ast;
+        $param.scope('parameter');
+        $past.push($param);
+
+        # register the parameter as a local symbol
+        $past.symbol($param.name(), :scope('lexical'));
+    }
+
+    # now put the block into place on the scope stack
+    $?BLOCK := $past;
+    @?BLOCK.unshift($past);
+
+    make $past;
+}
+
 method statement:sym<throw>($/) {
     make PAST::Op.new( $<expression>.ast,
                        :pirop('throw'),
@@ -147,7 +189,22 @@ method primary($/) {
 }
 
 method identifier($/) {
-    make PAST::Var.new(:name(~$/), :scope<package>, :node($/));
+     our @?BLOCK;
+     my $name  := ~$<ident>;
+     my $scope := 'package'; # default value
+     # go through all scopes and check if the symbol
+     # is registered as a local. If so, set scope to
+     # local.
+     for @?BLOCK {
+         if $_.symbol($name) {
+             $scope := 'lexical';
+         }
+     }
+
+     make PAST::Var.new( :name($name),
+                         :scope($scope),
+                         :viviself('Undef'),
+                         :node($/) );
 }
 
 method expression($/) {

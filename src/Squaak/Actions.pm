@@ -122,18 +122,22 @@ method statement:sym<while>($/) {
     make PAST::Op.new( $cond, $body, :pasttype('while'), :node($/) );
 }
 
-method block($/) {
-    # create a new block, set its type to 'immediate',
-    # meaning it is potentially executed immediately
-    # (as opposed to a declaration, such as a
-    # subroutine definition).
-    my $past := PAST::Block.new( :blocktype('immediate'),
-                                 :node($/) );
+method begin_block($/) {
+    our $?BLOCK;
+    our @?BLOCK;
+    $?BLOCK := PAST::Block.new(:blocktype('immediate'),
+                                   :node($/));
+    @?BLOCK.unshift($?BLOCK);
+}
 
-    # for each statement, add the result
-    # object to the block
+method block($/) {
+    our $?BLOCK;
+    our @?BLOCK;
+    my $past := @?BLOCK.shift();
+    $?BLOCK  := @?BLOCK[0];
+
     for $<statement> {
-        $past.push($_.ast) ;
+        $past.push($_.ast);
     }
     make $past;
 }

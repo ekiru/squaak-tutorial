@@ -67,7 +67,12 @@ rule statement:sym<while> {
     <sym> <expression> 'do' <block> 'end'
 }
 
+token begin_block {
+    <?>
+}
+
 rule block {
+    <.begin_block>
     <statement>*
 }
 

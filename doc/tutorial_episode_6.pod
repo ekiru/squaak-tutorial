@@ -77,13 +77,13 @@ for subroutine definitions:
      'sub' <identifier> <parameters>
      <statement>*
      'end'
-     {*}
  }
 
  rule parameters {
-     '(' [<identifier> [',' <identifier>]* ]? ')'
-     {*}
+     '(' [<identifier> ** ',']? ')'
  }
+
+"**" is the repetition specifier; "<identifier> ** ','" matches <identifier> separated by commas. Since it's in a rule and there is space between the ** and its operands, whitespace is allowed between the commas and both the preceding and following identifiers.
 
 This is rather straightforward, and the action methods for these rules are
 quite simple, as you will see. First, however, let's have a look at the rule
@@ -112,7 +112,7 @@ symbols right in time. Let's look at the action methods.
 
      # now add all parameters to this block
      for $<identifier> {
-         my $param := $( $_ );
+         my $param := $_.ast;
          $param.scope('parameter');
          $past.push($param);
 
@@ -127,24 +127,24 @@ symbols right in time. Let's look at the action methods.
      make $past;
  }
 
- method sub_definition($/) {
-     our $?BLOCK;
-     our @?BLOCK;
-     my $past := $( $<parameters> );
-     my $name := $( $<identifier> );
+ method statement:sym<sub>($/) {
+      our $?BLOCK;
+      our @?BLOCK;
+      my $past := $<parameters>.ast;
+      my $name := $<identifier>.ast;
 
-     # set the sub's name
-     $past.name( $name.name() );
+      # set the sub's name
+      $past.name($name.name);
 
-     # add all statements to the sub's body
-     for $<statement> {
-         $past.push( $( $_ ) );
-     }
+      # add all statements to the sub's body
+      for $<statement> {
+          $past.push($_.ast);
+      }
 
-     # and remove the block from the scope stack and restore the current block
-     @?BLOCK.shift();
-     $?BLOCK := @?BLOCK[0];
-     make $past;
+      # and remove the block from the scope stack and restore the current block
+      @?BLOCK.shift();
+      $?BLOCK := @?BLOCK[0];
+      make $past;
  }
 
 First, let's check out the parse action for parameters. First, a new
@@ -162,7 +162,7 @@ package variable C<$?BLOCK>) to C<PAST::Block> node we just created, and push it
 on the scope stack (referred to by our package variable C<@?BLOCK>).
 
 After the whole subroutine definition is parsed, the action method
-C<sub_definition> is invoked. This will retrieve the result object for
+C<statement:sym<sub>> is invoked. This will retrieve the result object for
 parameters, which is the C<PAST::Block> node that will represent the sub.
 After retrieving the result object for the sub's name, we set the name on the
 block node, and add all statements to the block. After this, we pop off this

@@ -270,9 +270,9 @@ invokes the new begin_TOP action at the beginning of the parse.
 The block rule, which defines a block to be a series of statements, represents
 a new scope. This rule is used in for instance if-statement
 (the then-part and else-part), while-statement (the loop body) and others.
-Update the parse action for block so it is invoked twice; once before parsing
-the statements, during which a new C<PAST::Block> is created and stored onto the
-scope stack, and once after parsing the statements, during which this PAST node
+Add a new begin_block rule consisting of <?>; in the action for it, create a new PAST::Block and store it onto the scope stack.
+Update the rule for block so that it calls begin_block before parsing
+the statements. Update the parse action for block after parsing the statements, during which this PAST node
 is set as the result object. Make sure C<$?BLOCK> is always pointing to the
 current block. In order to do this exercise correctly, you should understand
 well what the shift and unshift methods do, and why we didn't implement methods
@@ -322,24 +322,30 @@ or at the back.
 I hope it's clear what I mean here... otherwise, have a look at the code,
 and try to figure out what's happening:
 
-    method block($/, $key) {
-      our $?BLOCK;
-      our @?BLOCK;
-      if $key eq 'open' {
-            $?BLOCK := PAST::Block.new(
-                        :blocktype('immediate'),
-                          :node($/) );
-           @?BLOCK.unshift($?BLOCK);
-        }
-        else {
-            my $past := @?BLOCK.shift();
-            $?BLOCK  := @?BLOCK[0];
+    # In src/Squaak/Grammar.pm
+    token begin_block {
+        <?>
+    }
 
-            for $<statement> {
-                $past.push( $( $_ ) );
-            }
-            make $past;
+    # In src/Squaak/Actions.pm
+    method begin_block {
+        our $?BLOCK;
+        our @?BLOCK;
+        $?BLOCK := PAST::Block.new(:blocktype('immediate'),
+                                   :node($/));
+        @?BLOCK.unshift($?BLOCK);
+    }
+
+    method block($/, $key) {
+        our $?BLOCK;
+        our @?BLOCK;
+        my $past := @?BLOCK.shift();
+        $?BLOCK  := @?BLOCK[0];
+
+        for $<statement> {
+            $past.push($_.ast);
         }
+        make $past;
     }
 
 =cut

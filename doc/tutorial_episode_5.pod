@@ -327,6 +327,11 @@ and try to figure out what's happening:
         <?>
     }
 
+    rule block {
+        <.begin_block>
+        <statement>*
+    }
+
     # In src/Squaak/Actions.pm
     method begin_block {
         our $?BLOCK;

@@ -266,7 +266,7 @@ programming language. Hope to catch you later!
 =item *
 
 In this episode, we changed the action method for the C<TOP> rule; it is now
-invoked twice, once at the beginning of the parse, once at the end of the parse.
+invokes the new begin_TOP action at the beginning of the parse.
 The block rule, which defines a block to be a series of statements, represents
 a new scope. This rule is used in for instance if-statement
 (the then-part and else-part), while-statement (the loop body) and others.

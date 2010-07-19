@@ -354,6 +354,12 @@ loop variable is declared, initialized using the viviself attribute, and
 entered into the new block's symbol table. Note that after creating the new
 C<PAST::Block> object, we put it onto the stack scope.
 
+The action method for step is simple:
+
+    method step($/) {
+        make $<expression>.ast;
+    }
+
 Now, the action method for the for statement is quite long, so I'll just
 embed my comments, which makes reading it easier.
 
@@ -402,7 +408,8 @@ exercise to the reader.
         my $step;
         if $<step> {
             my $stepsize := $<step>[0].ast;
-            $step := PAST::Op.new( $iter, $stepsize, :pirop('add'), :node($/) );
+            $step := PAST::Op.new( $iter, $stepsize,
+                                   :pirop('add__OP+'), :node($/) );
         }
         else { ## default is increment by 1
             $step := PAST::Op.new( $iter, :pirop('inc'), :node($/) );
@@ -413,13 +420,13 @@ incrementing statement to $body.
 
         $body.push($step);
 
-The loop condition uses the "<=" operator, and compares the loop variable
+The loop condition uses the isle opcode, which checks that its first operand is less than or equal to its second, and compares the loop variable
 with the maximum value that was specified.
 
         ## while loop iterator <= end-expression
-        my $cond := PAST::Op.new( $iter,
-                                  $<expression>.ast,
-                                  :name('infix:<=') );
+        my $cond := PAST::Op.new( :pirop<isle__IPP>,
+                                  $iter,
+                                  $<expression>.ast );
 
 Now we have the PAST for the loop condition and the loop body, so now create
 a PAST to represent the (while) loop.

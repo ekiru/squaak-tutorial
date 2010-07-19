@@ -61,6 +61,14 @@ rule statement:sym<if> {
     'end'
 }
 
+rule statement:sym<sub_call> {
+    <primary> <arguments>
+}
+
+rule arguments {
+    '(' [<expression> ** ',']? ')'
+}
+
 rule statement:sym<throw> {
     <sym> <expression>
 }

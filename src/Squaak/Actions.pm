@@ -89,6 +89,21 @@ method statement:sym<if>($/) {
     make $past;
 }
 
+method statement:sym<sub_call>($/) {
+    my $invocant := $<primary>.ast;
+    my $past     := $<arguments>.ast;
+    $past.unshift($invocant);
+    make $past;
+}
+
+method arguments($/) {
+    my $past := PAST::Op.new( :pasttype('call'), :node($/) );
+    for $<expression> {
+        $past.push($_.ast);
+    }
+    make $past;
+}
+
 method statement:sym<throw>($/) {
     make PAST::Op.new( $<expression>.ast,
                        :pirop('throw'),

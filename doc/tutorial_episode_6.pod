@@ -332,12 +332,12 @@ which is local to the for-statement. Let's check out the rule for for_init:
                                     :node($/) );
         @?BLOCK.unshift($?BLOCK);
 
-        my $iter := $( $<identifier> );
+        my $iter := $<identifier>.ast;
         ## set a flag that this identifier is being declared
         $iter.isdecl(1);
         $iter.scope('lexical');
         ## the identifier is initialized with this expression
-        $iter.viviself( $( $<expression> ) );
+        $iter.viviself( $<expression>.ast );
 
         ## enter the loop variable into the symbol table.
         $?BLOCK.symbol($iter.name(), :scope('lexical'));
@@ -365,7 +365,7 @@ First, get the result object of the for statement initialization rule; this
 is the C<PAST::Var> object, representing the declaration and initialization
 of the loop variable.
 
-        my $init := $( $<for_init> );
+        my $init := $<for_init>.ast;
 
 Then, create a new node for the loop variable. Yes, another one (besides the
 one that is currently contained in the C<PAST::Block>). This one is used when
@@ -390,7 +390,7 @@ statement PAST nodes onto it.
         my $body := @?BLOCK.shift();
         $?BLOCK  := @?BLOCK[0];
         for $<statement> {
-            $body.push($($_));
+            $body.push($_.ast);
         }
 
 If there was a step, we use that value; otherwise, we use assume a default
@@ -401,7 +401,7 @@ exercise to the reader.
 
         my $step;
         if $<step> {
-            my $stepsize := $( $<step>[0] );
+            my $stepsize := $<step>[0].ast;
             $step := PAST::Op.new( $iter, $stepsize, :pirop('add'), :node($/) );
         }
         else { ## default is increment by 1
@@ -418,7 +418,7 @@ with the maximum value that was specified.
 
         ## while loop iterator <= end-expression
         my $cond := PAST::Op.new( $iter,
-                                  $( $<expression> ),
+                                  $<expression>.ast,
                                   :name('infix:<=') );
 
 Now we have the PAST for the loop condition and the loop body, so now create

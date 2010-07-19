@@ -78,6 +78,73 @@ method statement:sym<assignment>($/) {
     make PAST::Op.new($lhs, $rhs, :pasttype<bind>, :node($/));
 }
 
+method for_init($/) {
+    our $?BLOCK;
+    our @?BLOCK;
+
+    ## create a new scope here, so that we can
+    ## add the loop variable
+    ## to this block here, which is convenient.
+    $?BLOCK := PAST::Block.new( :blocktype('immediate'),
+                                :node($/) );
+    @?BLOCK.unshift($?BLOCK);
+
+    my $iter := $<identifier>.ast;
+    ## set a flag that this identifier is being declared
+    $iter.isdecl(1);
+    $iter.scope('lexical');
+    ## the identifier is initialized with this expression
+    $iter.viviself( $<expression>.ast );
+
+    ## enter the loop variable into the symbol table.
+    $?BLOCK.symbol($iter.name(), :scope('lexical'));
+
+    make $iter;
+}
+
+method step($/) {
+    make $<expression>.ast;
+}
+
+method statement:sym<for>($/) {
+    our $?BLOCK;
+    our @?BLOCK;
+
+    my $init := $<for_init>.ast;
+    ## cache the name of the loop variable
+    my $itername := $init.name();
+    my $iter := PAST::Var.new( :name($itername),
+                               :scope('lexical'),
+                               :node($/) );
+    ## the body of the loop consists of the statements written by the user and
+    ## the increment instruction of the loop iterator.
+
+    my $body := @?BLOCK.shift();
+    $?BLOCK  := @?BLOCK[0];
+    for $<statement> {
+        $body.push($_.ast);
+    }
+
+    my $step;
+    if $<step> {
+        my $stepsize := $<step>[0].ast;
+        $step := PAST::Op.new( $iter, $stepsize,
+                               :pirop('add__0P+'), :node($/) );
+    }
+    else { ## default is increment by 1
+        $step := PAST::Op.new( $iter, :pirop('inc'), :node($/) );
+    }
+    $body.push($step);
+
+    ## while loop iterator <= end-expression
+    my $cond := PAST::Op.new( :pirop<isle__IPP>,
+                              $iter,
+                              $<expression>.ast );
+    my $loop := PAST::Op.new( $cond, $body, :pasttype('while'), :node($/) );
+
+    make PAST::Stmts.new( $init, $loop, :node($/) );
+}
+
 method statement:sym<if>($/) {
     my $cond := $<expression>.ast;
     my $past := PAST::Op.new( $cond, $<then>.ast,

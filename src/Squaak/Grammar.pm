@@ -55,6 +55,19 @@ rule statement:sym<do> {
     <sym> <block> 'end'
 }
 
+rule statement:sym<for> {
+    <sym> <for_init> ',' <expression> <step>?
+    'do' <statement>* 'end'
+}
+
+rule step {
+    ',' <expression>
+}
+
+rule for_init {
+    'var' <identifier> '=' <expression>
+}
+
 rule statement:sym<if> {
     <sym> <expression> 'then' $<then>=<block>
     ['else' $<else>=<block> ]?

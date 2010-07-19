@@ -272,8 +272,8 @@ First, let us look at the BNF of the for-statement:
 
 It's pretty easy to convert this to Perl 6 rules:
 
-    rule for_statement {
-        'for' <for_init> ',' <expression> <step>?
+    rule statement:sym<for> {
+        <sym> <for_init> ',' <expression> <step>?
         'do' <statement>* 'end'
     }
 
@@ -357,7 +357,7 @@ C<PAST::Block> object, we put it onto the stack scope.
 Now, the action method for the for statement is quite long, so I'll just
 embed my comments, which makes reading it easier.
 
-    method for_statement($/) {
+    method statement:sym<for>($/) {
         our $?BLOCK;
         our @?BLOCK;
 

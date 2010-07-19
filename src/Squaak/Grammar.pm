@@ -32,6 +32,17 @@ rule statementlist {
 
 rule stat_or_def {
     | <statement>
+    | <sub_definition>
+}
+
+rule sub_definition {
+    'sub' <identifier> <parameters>
+    <statement>*
+    'end'
+}
+
+rule parameters {
+   '(' [<identifier> ** ',']? ')'
 }
 
 proto rule statement { <...> }
@@ -48,16 +59,6 @@ rule statement:sym<if> {
     <sym> <expression> 'then' $<then>=<block>
     ['else' $<else>=<block> ]?
     'end'
-}
-
-rule statement:sym<sub> {
-    <sym> <identifier> <parameters>
-    <statement>*
-    'end'
-}
-
-rule parameters {
-   '(' [<identifier> ** ',']? ')'
 }
 
 rule statement:sym<throw> {

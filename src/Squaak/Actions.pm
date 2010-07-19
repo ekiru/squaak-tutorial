@@ -21,28 +21,14 @@ method statementlist($/) {
 }
 
 method stat_or_def($/) {
-    make $<statement>.ast;
-}
-
-method statement:sym<assignment>($/) {
-    my $lhs := $<primary>.ast;
-    my $rhs := $<expression>.ast;
-    $lhs.lvalue(1);
-    make PAST::Op.new($lhs, $rhs, :pasttype<bind>, :node($/));
-}
-
-method statement:sym<if>($/) {
-    my $cond := $<expression>.ast;
-    my $past := PAST::Op.new( $cond, $<then>.ast,
-                              :pasttype('if'),
-                              :node($/) );
-    if $<else> {
-        $past.push($<else>[0].ast);
+    if $<statement> { 
+        make $<statement>.ast;
+    } else { # Must be a def
+        make $<sub_definition>.ast;
     }
-    make $past;
 }
 
-method statement:sym<sub>($/) {
+method sub_definition($/) {
      our $?BLOCK;
      our @?BLOCK;
      my $past := $<parameters>.ast;
@@ -81,6 +67,25 @@ method parameters($/) {
     $?BLOCK := $past;
     @?BLOCK.unshift($past);
 
+    make $past;
+}
+
+
+method statement:sym<assignment>($/) {
+    my $lhs := $<primary>.ast;
+    my $rhs := $<expression>.ast;
+    $lhs.lvalue(1);
+    make PAST::Op.new($lhs, $rhs, :pasttype<bind>, :node($/));
+}
+
+method statement:sym<if>($/) {
+    my $cond := $<expression>.ast;
+    my $past := PAST::Op.new( $cond, $<then>.ast,
+                              :pasttype('if'),
+                              :node($/) );
+    if $<else> {
+        $past.push($<else>[0].ast);
+    }
     make $past;
 }
 

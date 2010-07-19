@@ -187,8 +187,8 @@ the subroutines in an array or hash field, and invoke them from there. Let's
 take a look at the action method, which is really quite straightforward.
 
  method sub_call($/) {
-     my $invocant := $( $<primary> );
-     my $past     := $( $<arguments> );
+     my $invocant := $<primary>.ast;
+     my $past     := $<arguments>.ast;
      $past.unshift($invocant);
      make $past;
  }
@@ -196,7 +196,7 @@ take a look at the action method, which is really quite straightforward.
  method arguments($/) {
      my $past := PAST::Op.new( :pasttype('call'), :node($/) );
      for $<expression> {
-         $past.push( $( $_ ) );
+         $past.push($_.ast);
      }
      make $past;
  }

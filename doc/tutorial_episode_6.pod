@@ -180,7 +180,6 @@ First we'll introduce the grammar rules.
 
  rule sub_call {
      <primary> <arguments>
-     {*}
  }
 
 Not only allows this to invoke subroutines by their name, you can also store

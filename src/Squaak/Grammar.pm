@@ -26,7 +26,13 @@ token ws {
 
 ## Statements
 
-rule statementlist { [ <statement> | <?> ] ** ';' }
+rule statementlist {
+    <stat_or_def>*
+}
+
+rule stat_or_def {
+    | <statement>
+}
 
 proto rule statement { <...> }
 

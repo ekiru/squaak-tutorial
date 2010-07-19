@@ -16,8 +16,12 @@ method TOP($/) {
 
 method statementlist($/) {
     my $past := PAST::Stmts.new( :node($/) );
-    for $<statement> { $past.push( $_.ast ); }
+    for $<stat_or_def> { $past.push( $_.ast ); }
     make $past;
+}
+
+method stat_or_def($/) {
+    make $<statement>.ast;
 }
 
 method statement:sym<assignment>($/) {

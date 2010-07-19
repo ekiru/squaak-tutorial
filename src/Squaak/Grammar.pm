@@ -140,3 +140,18 @@ token string_constant { <quote> }
 proto token quote { <...> }
 token quote:sym<'> { <?[']> <quote_EXPR: ':q'> }
 token quote:sym<"> { <?["]> <quote_EXPR: ':qq'> }
+
+## Operators
+
+INIT {
+    Squaak::Grammar.O(':prec<u>, :assoc<left>',  '%multiplicative');
+    Squaak::Grammar.O(':prec<t>, :assoc<left>',  '%additive');
+}
+
+token circumfix:sym<( )> { '(' <.ws> <EXPR> ')' }
+
+token infix:sym<*>  { <sym> <O('%multiplicative, :pirop<mul>')> }
+token infix:sym</>  { <sym> <O('%multiplicative, :pirop<div>')> }
+
+token infix:sym<+>  { <sym> <O('%additive, :pirop<add>')> }
+token infix:sym<->  { <sym> <O('%additive, :pirop<sub>')> }

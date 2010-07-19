@@ -168,7 +168,19 @@ started. Replace the C<statement> rule with this rule:
         <assignment>
     }
 
+Replace the statementlist rule with this:
+
+    rule statement_list {
+        <stat_or_def>*
+    }
+
+When you work on the action methods later, you'll also want to replace $<statement> in the action method with $<stat_or_def>
+
 Add these rules:
+
+    rule stat_or_def {
+        <statement>
+    }
 
     rule assignment {
         <primary> '=' <expression>
@@ -311,6 +323,10 @@ out how you do such a binding).
 
 =item 6.
 
+Write the action method for stat_or_def. Simply retrieve the result object from statement and make that the result object.
+
+=item 7.
+
 Run your compiler on a script or in interactive mode. Use the target option to
 see what PIR is being generated on the input "x = 42".
 
@@ -413,6 +429,14 @@ find out how you do such a binding).
 Note that we set the lvalue flag on $lhs. See PDD26 for details on this flag.
 
 =item 6
+
+Write the action method for stat_or_def. Simply retrieve the result object from statement and make that the result object.
+
+ method stat_or_def {
+     make $<statement>.ast;
+ }
+
+=item 7
 
 Run your compiler on a script or in interactive mode. Use the target option to
 see what PIR is being generated on the input "x = 42".

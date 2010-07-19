@@ -241,7 +241,7 @@ The code to be added to the method statement:sym<var> looks then like this:
 
      if $?BLOCK.symbol( $name ) {
          # symbol is already present
-         $/.panic("Error: symbol " ~ $name ~ " was already defined.\n");
+         $/.CURSOR.panic("Error: symbol " ~ $name ~ " was already defined.\n");
      }
      else {
          $?BLOCK.symbol( $name, :scope('lexical') );

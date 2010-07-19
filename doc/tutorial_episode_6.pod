@@ -275,17 +275,14 @@ It's pretty easy to convert this to Perl 6 rules:
     rule for_statement {
         'for' <for_init> ',' <expression> <step>?
         'do' <statement>* 'end'
-        {*}
     }
 
     rule step {
         ',' <expression>
-        {*}
     }
 
     rule for_init {
         'var' <identifier> '=' <expression>
-        {*}
     }
 
 Pretty easy huh? Let's take a look at the semantics. A for-loop is just

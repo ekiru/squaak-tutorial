@@ -183,7 +183,7 @@ Add these rules:
     }
 
     rule assignment {
-        <primary> '=' <expression>
+        <primary> '=' <EXPR>
     }
 
     rule primary {
@@ -194,18 +194,13 @@ Add these rules:
         <!keyword> <ident>
     }
 
-    rule expression {
-        | <integer_constant>
-        | <string_constant>
-    }
-
     token keyword {
         ['and'|'catch'|'do'   |'else' |'end' |'for' |'if'
         |'not'|'or'   |'sub'  |'throw'|'try' |'var'|'while']>>
     }
 
-Rename the token C<term:sym<integer> > as C<integer_constant>, and C<term:sym<quote> > as
-C<string_constant> (to better match our language specification).
+Rename the token C<term:sym<integer> > as C<term:sym<integer_constant> >, and C<term:sym<quote> > as
+C<term:sym<string_constant> > (to better match our language specification).
 
 Finally, remove the rules C<proto token statement_control>, C<rule statement_control:sym<say> >, and <rule statement_control:sym<print> >.
 
@@ -312,20 +307,16 @@ representation of the match object ($/). For now, you can set the scope to
 
 =item 4.
 
-Write the action method for expression. If the integer_constant subrule matched, retrieve its result object; otherwise, retrieve the string_constant subrule's result object.
-
-=item 5.
-
 Write the action method for assignment. Retrieve the result objects for
 "primary" and for "expression", and create a PAST::Op node that binds the
 expression to the primary. (Check out pdd26 for PAST::Op node types, and find
 out how you do such a binding).
 
-=item 6.
+=item 5.
 
 Write the action method for stat_or_def. Simply retrieve the result object from statement and make that the result object.
 
-=item 7.
+=item 6.
 
 Run your compiler on a script or in interactive mode. Use the target option to
 see what PIR is being generated on the input "x = 42".
@@ -406,14 +397,6 @@ representation of the match object ($/). For now, you can set the scope to
 
 =item 4
 
-Write the action method for expression. If the integer_constant subrule matched, retrieve its result object; otherwise, retrieve the string_constant subrule's result object.
-
- method expression($/) {
-    make $<integer_constant> ?? $<integer_constant>.ast !! <string_constant>.ast;
- }
-
-=item 5
-
 Write the action method for assignment. Retrieve the result objects for
 "primary" and for "expression", and create a C<PAST::Op> node that binds the
 expression to the primary. (Check out pdd26 for C<PAST::Op> node types, and
@@ -428,7 +411,7 @@ find out how you do such a binding).
 
 Note that we set the lvalue flag on $lhs. See PDD26 for details on this flag.
 
-=item 6
+=item 5
 
 Write the action method for stat_or_def. Simply retrieve the result object from statement and make that the result object.
 
@@ -436,7 +419,7 @@ Write the action method for stat_or_def. Simply retrieve the result object from 
      make $<statement>.ast;
  }
 
-=item 7
+=item 6
 
 Run your compiler on a script or in interactive mode. Use the target option to
 see what PIR is being generated on the input "x = 42".

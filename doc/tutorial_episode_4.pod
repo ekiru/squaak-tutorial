@@ -66,7 +66,7 @@ part. Implementing this in Perl 6 rules and PAST is almost trivial, but first, l
 Delete the statement method from Action.pm, and rename the assignment rule in both Grammar.pm and Actions.pm to statement:sym<assignment>. The new statement rule is a "proto" rule. A proto rule is equivalent to a normal rule whose body contains each specialization of the rule separated by the | operator. The name of a particular specialization of a proto rule is placed between the angle brackets. Within the body of the rule, it can be matched literally with <sym>.
 
     rule statement:sym<if> {
-        <sym> <expression> 'then' $<then>=<block>
+        <sym> <EXPR> 'then' $<then>=<block>
         ['else' $<else>=<block> ]?
         'end'
     }
@@ -100,7 +100,7 @@ Note that the proto declaration for statement means that the result object for  
     }
 
     method statement:sym<if>($/) {
-        my $cond := $<expression>.ast;
+        my $cond := $<EXPR>.ast;
         my $past := PAST::Op.new( $cond, $<then>.ast,
                                   :pasttype('if'),
                                   :node($/) );
@@ -136,7 +136,7 @@ implies the following order:
 
 =item  3. parse statement:sym<if>
 
-=item  4. parse expression
+=item  4. parse EXPR
 
 =item  5. parse integer
 
@@ -176,7 +176,7 @@ to discuss the parse action, as it shows the use of generating custom PIR
 instructions. First the grammar rule:
 
     rule statement:sym<throw> {
-        <sym> <expression>
+        <sym> <EXPR>
     }
 
 The throw statement
@@ -188,7 +188,7 @@ object of the expression being thrown as a child of the C<PAST::Op> node
 representing the "throw" instruction.
 
     method statement:sym<throw>($/) {
-        make PAST::Op.new( $<expression>.ast,
+        make PAST::Op.new( $<EXPR>.ast,
                            :pirop('throw'),
                            :node($/) );
     }
@@ -254,7 +254,7 @@ C<PAST::Op> nodes you should create.
 The while-statement is straightforward:
 
  method statement:sym<while>($/) {
-     my $cond := $<expression>.ast;
+     my $cond := $<EXPR>.ast;
      my $body := $<block>.ast;
      make PAST::Op.new( $cond, $body, :pasttype('while'), :node($/) );
  }

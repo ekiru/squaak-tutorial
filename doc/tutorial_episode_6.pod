@@ -83,6 +83,15 @@ for subroutine definitions:
      '(' [<identifier> ** ',']? ')'
  }
 
+And we need to add it to rule stat_or_def:
+
+ rule stat_or_def {
+     | <statement>
+     | <sub_definition>
+ }
+
+Appropriately modifying the action method is simple. It's analogous to the action method for expression.
+
 "**" is the repetition specifier; "<identifier> ** ','" matches <identifier> separated by commas. Since it's in a rule and there is space between the ** and its operands, whitespace is allowed between the commas and both the preceding and following identifiers.
 
 This is rather straightforward, and the action methods for these rules are
@@ -127,7 +136,7 @@ symbols right in time. Let's look at the action methods.
      make $past;
  }
 
- method statement:sym<sub>($/) {
+ method sub_definition($/) {
       our $?BLOCK;
       our @?BLOCK;
       my $past := $<parameters>.ast;
@@ -162,7 +171,7 @@ package variable C<$?BLOCK>) to C<PAST::Block> node we just created, and push it
 on the scope stack (referred to by our package variable C<@?BLOCK>).
 
 After the whole subroutine definition is parsed, the action method
-C<statement:sym<sub>> is invoked. This will retrieve the result object for
+C<sub_definition> is invoked. This will retrieve the result object for
 parameters, which is the C<PAST::Block> node that will represent the sub.
 After retrieving the result object for the sub's name, we set the name on the
 block node, and add all statements to the block. After this, we pop off this

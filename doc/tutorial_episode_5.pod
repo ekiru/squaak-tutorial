@@ -94,7 +94,7 @@ statement, so I assume you know how to extend the statement rule to allow for
 variable declarations.
 
  rule statement:sym<var> {
-     <sym> <identifier> ['=' <expression>]?
+     <sym> <identifier> ['=' <EXPR>]?
  }
 
 A local variable is declared using the C<var> keyword, and has an optional
@@ -113,10 +113,10 @@ looks like:
      $past.isdecl(1);
 
      # check for the initialization expression
-     if $<expression> {
+     if $<EXPR> {
          # use the viviself clause to add a
          # an initialization expression
-         $past.viviself($<expression>[0].ast);
+         $past.viviself($<EXPR>[0].ast);
      }
      else { # no initialization, default to "Undef"
          $past.viviself('Undef');

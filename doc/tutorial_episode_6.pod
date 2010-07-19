@@ -192,7 +192,7 @@ First we'll introduce the grammar rules.
  }
 
  rule arguments {
-     '(' [<expression> ** ',']? ')'
+     '(' [<EXPR> ** ',']? ')'
  }
 
 Not only allows this to invoke subroutines by their name, you can also store
@@ -208,7 +208,7 @@ take a look at the action method, which is really quite straightforward.
 
  method arguments($/) {
      my $past := PAST::Op.new( :pasttype('call'), :node($/) );
-     for $<expression> {
+     for $<EXPR> {
          $past.push($_.ast);
      }
      make $past;
@@ -273,16 +273,16 @@ First, let us look at the BNF of the for-statement:
 It's pretty easy to convert this to Perl 6 rules:
 
     rule statement:sym<for> {
-        <sym> <for_init> ',' <expression> <step>?
+        <sym> <for_init> ',' <EXPR> <step>?
         'do' <statement>* 'end'
     }
 
     rule step {
-        ',' <expression>
+        ',' <EXPR>
     }
 
     rule for_init {
-        'var' <identifier> '=' <expression>
+        'var' <identifier> '=' <EXPR>
     }
 
 Pretty easy huh? Let's take a look at the semantics. A for-loop is just
@@ -337,7 +337,7 @@ which is local to the for-statement. Let's check out the rule for for_init:
         $iter.isdecl(1);
         $iter.scope('lexical');
         ## the identifier is initialized with this expression
-        $iter.viviself( $<expression>.ast );
+        $iter.viviself( $<EXPR>.ast );
 
         ## enter the loop variable into the symbol table.
         $?BLOCK.symbol($iter.name(), :scope('lexical'));
@@ -348,7 +348,7 @@ which is local to the for-statement. Let's check out the rule for for_init:
 So, just as we created a new C<PAST::Block> for the subroutine in the action
 method for parameters, we create a new C<PAST::Block> for the for-statement in
 the action method that defines the loop variable. (Guess why we made for-init
-a subrule, and didn't put in "C<var> <ident&gt = <expression>" in the rule of
+a subrule, and didn't put in "C<var> <ident&gt = <EXPR>" in the rule of
 for-statement). This block is the place to live for the loop variable. The
 loop variable is declared, initialized using the viviself attribute, and
 entered into the new block's symbol table. Note that after creating the new
@@ -357,7 +357,7 @@ C<PAST::Block> object, we put it onto the stack scope.
 The action method for step is simple:
 
     method step($/) {
-        make $<expression>.ast;
+        make $<EXPR>.ast;
     }
 
 Now, the action method for the for statement is quite long, so I'll just
@@ -426,7 +426,7 @@ with the maximum value that was specified.
         ## while loop iterator <= end-expression
         my $cond := PAST::Op.new( :pirop<isle__IPP>,
                                   $iter,
-                                  $<expression>.ast );
+                                  $<EXPR>.ast );
 
 Now we have the PAST for the loop condition and the loop body, so now create
 a PAST to represent the (while) loop.

@@ -187,15 +187,19 @@ Episode 5, we already gave some tips on how to create the PAST nodes for a
 subroutine invocation. In this section, we'll give a complete description.
 First we'll introduce the grammar rules.
 
- rule sub_call {
+ rule statement:sym<sub_call> {
      <primary> <arguments>
+ }
+
+ rule arguments {
+     '(' [<expression> ** ',']? ')'
  }
 
 Not only allows this to invoke subroutines by their name, you can also store
 the subroutines in an array or hash field, and invoke them from there. Let's
 take a look at the action method, which is really quite straightforward.
 
- method sub_call($/) {
+ method statement:sym<sub_call>($/) {
      my $invocant := $<primary>.ast;
      my $past     := $<arguments>.ast;
      $past.unshift($invocant);

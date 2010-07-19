@@ -48,7 +48,7 @@ rule parameters {
 proto rule statement { <...> }
 
 rule statement:sym<assignment> { 
-    <primary> '=' <expression>
+    <primary> '=' <EXPR>
 }
 
 rule statement:sym<do> {
@@ -56,20 +56,20 @@ rule statement:sym<do> {
 }
 
 rule statement:sym<for> {
-    <sym> <for_init> ',' <expression> <step>?
+    <sym> <for_init> ',' <EXPR> <step>?
     'do' <statement>* 'end'
 }
 
 rule step {
-    ',' <expression>
+    ',' <EXPR>
 }
 
 rule for_init {
-    'var' <identifier> '=' <expression>
+    'var' <identifier> '=' <EXPR>
 }
 
 rule statement:sym<if> {
-    <sym> <expression> 'then' $<then>=<block>
+    <sym> <EXPR> 'then' $<then>=<block>
     ['else' $<else>=<block> ]?
     'end'
 }
@@ -79,11 +79,11 @@ rule statement:sym<sub_call> {
 }
 
 rule arguments {
-    '(' [<expression> ** ',']? ')'
+    '(' [<EXPR> ** ',']? ')'
 }
 
 rule statement:sym<throw> {
-    <sym> <expression>
+    <sym> <EXPR>
 }
 
 rule statement:sym<try> {
@@ -98,11 +98,11 @@ rule exception {
 }
 
 rule statement:sym<var> {
-    <sym> <identifier> ['=' <expression>]?
+    <sym> <identifier> ['=' <EXPR>]?
 }
 
 rule statement:sym<while> {
-    <sym> <expression> 'do' <block> 'end'
+    <sym> <EXPR> 'do' <block> 'end'
 }
 
 token begin_block {
@@ -129,13 +129,8 @@ token keyword {
     |'not'|'or'   |'sub'  |'throw'|'try' |'var'|'while']>>
 }
 
-rule expression {
-    | <integer_constant>
-    | <string_constant>
-}
-
-token integer_constant { <integer> }
-token string_constant { <quote> }
+token term:sym<integer_constant> { <integer> }
+token term:sym<string_constant> { <quote> }
 
 proto token quote { <...> }
 token quote:sym<'> { <?[']> <quote_EXPR: ':q'> }

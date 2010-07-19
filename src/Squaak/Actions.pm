@@ -73,7 +73,7 @@ method parameters($/) {
 
 method statement:sym<assignment>($/) {
     my $lhs := $<primary>.ast;
-    my $rhs := $<expression>.ast;
+    my $rhs := $<EXPR>.ast;
     $lhs.lvalue(1);
     make PAST::Op.new($lhs, $rhs, :pasttype<bind>, :node($/));
 }
@@ -94,7 +94,7 @@ method for_init($/) {
     $iter.isdecl(1);
     $iter.scope('lexical');
     ## the identifier is initialized with this expression
-    $iter.viviself( $<expression>.ast );
+    $iter.viviself( $<EXPR>.ast );
 
     ## enter the loop variable into the symbol table.
     $?BLOCK.symbol($iter.name(), :scope('lexical'));
@@ -103,7 +103,7 @@ method for_init($/) {
 }
 
 method step($/) {
-    make $<expression>.ast;
+    make $<EXPR>.ast;
 }
 
 method statement:sym<for>($/) {
@@ -139,14 +139,14 @@ method statement:sym<for>($/) {
     ## while loop iterator <= end-expression
     my $cond := PAST::Op.new( :pirop<isle__IPP>,
                               $iter,
-                              $<expression>.ast );
+                              $<EXPR>.ast );
     my $loop := PAST::Op.new( $cond, $body, :pasttype('while'), :node($/) );
 
     make PAST::Stmts.new( $init, $loop, :node($/) );
 }
 
 method statement:sym<if>($/) {
-    my $cond := $<expression>.ast;
+    my $cond := $<EXPR>.ast;
     my $past := PAST::Op.new( $cond, $<then>.ast,
                               :pasttype('if'),
                               :node($/) );
@@ -165,14 +165,14 @@ method statement:sym<sub_call>($/) {
 
 method arguments($/) {
     my $past := PAST::Op.new( :pasttype('call'), :node($/) );
-    for $<expression> {
+    for $<EXPR> {
         $past.push($_.ast);
     }
     make $past;
 }
 
 method statement:sym<throw>($/) {
-    make PAST::Op.new( $<expression>.ast,
+    make PAST::Op.new( $<EXPR>.ast,
                        :pirop('throw'),
                        :node($/) );
 }
@@ -228,10 +228,10 @@ method statement:sym<var>($/) {
     $past.isdecl(1);
 
     # check for the initialization expression
-    if $<expression> {
+    if $<EXPR> {
         # use the viviself clause to add a
         # an initialization expression
-        $past.viviself($<expression>[0].ast);
+        $past.viviself($<EXPR>[0].ast);
     }
     else { # no initialization, default to "Undef"
         $past.viviself('Undef');
@@ -250,7 +250,7 @@ method statement:sym<var>($/) {
 }
 
 method statement:sym<while>($/) {
-    my $cond := $<expression>.ast;
+    my $cond := $<EXPR>.ast;
     my $body := $<block>.ast;
     make PAST::Op.new( $cond, $body, :pasttype('while'), :node($/) );
 }
@@ -298,12 +298,8 @@ method identifier($/) {
                          :node($/) );
 }
 
-method expression($/) {
-    make $<integer_constant> ?? $<integer_constant>.ast !! $<string_constant>.ast;
-}
-
-method integer_constant($/) { make $<integer>.ast; }
-method string_constant($/) { make $<quote>.ast; }
+method term:sym<integer_constant>($/) { make $<integer>.ast; }
+method term:sym<string_constant>($/) { make $<quote>.ast; }
 
 method quote:sym<'>($/) { make $<quote_EXPR>.ast; }
 method quote:sym<">($/) { make $<quote_EXPR>.ast; }

@@ -227,8 +227,8 @@ prevents us from calling these subs in normal Squaak code).
 
 =head2 Basic data types and Aggregates as arguments
 
-All data types, both basic and aggregate data types are represented by Parrot
-Magic Cookies (PMCs). The PMC is one of the four built-in data types that Parrot
+All data types, both basic and aggregate data types are represented by Polymorphic
+Containers (PMCs). The PMC is one of the four built-in data types that Parrot
 can handle; the others are integer, floating-point and string. Currently, the
 PCT can only generate code to handle PMCs, not the other basic data types.
 Parrot has registers for each its four built-in data types. The integer,

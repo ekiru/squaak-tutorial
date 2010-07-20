@@ -185,7 +185,7 @@ Now, we need to define the actual operators:
 
     token infix:sym<or> { <sym> <O('%disjunction, :pasttype<unless>')> }
     token infix:sym<and> { <sym> <O('%conjunction, :pasttype<if>')> }
-    token infix:sym«<» { <sym> <O('%relational, :pirop<isle IPP>')> }
+    token infix:sym«<» { <sym> <O('%relational, :pirop<islt>')> }
     token infix:sym<+> { <sym> <O('%additive, :pirop<add>')> }
     token infix:sym<*> { <sym> <O('%multiplicative, :pirop<mul>')> }
     token prefix:sym<not> { <sym> <O('%unary-not, :pirop<isfalse>')> }

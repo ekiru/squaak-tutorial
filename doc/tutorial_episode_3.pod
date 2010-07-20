@@ -188,6 +188,10 @@ Add these rules:
         |'not'|'or'   |'sub'  |'throw'|'try' |'var'|'while']>>
     }
 
+    token term:sym<primary> {
+        <primary>
+    }
+
 Rename the token C<term:sym<integer> > as C<term:sym<integer_constant> >, and C<term:sym<quote> > as
 C<term:sym<string_constant> > (to better match our language specification).
 
@@ -200,6 +204,9 @@ Add action methods for term:sym<integer_constant> and term:sym<string_constant>:
     }
     method term:sym<string_constant>($/) {
         make PAST::Val.new(:value($<quote>.ast), :returns<String>);
+    }
+    method term:sym<primary>($/) {
+        make $<primary>.ast;
     }
 
 PAST::Val nodes are used the represent constant values.

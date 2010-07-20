@@ -117,8 +117,14 @@ rule block {
 ## Terms
 
 rule primary {
-    <identifier>
+    <identifier> <postfix_expression>*
 }
+
+proto rule postfix_expression { <...> }
+
+rule postfix_expression:sym<index> { '[' <EXPR> ']' }
+
+rule postfix_expression:sym<key> { '{' <EXPR> '}' }
 
 token identifier {
     <!keyword> <ident>

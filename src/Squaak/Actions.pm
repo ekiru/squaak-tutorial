@@ -276,7 +276,26 @@ method block($/) {
 }
 
 method primary($/) {
-    make $<identifier>.ast;
+    my $past := $<identifier>.ast;
+
+    for $<postfix_expression> {
+        my $expr := $_.ast;
+        $expr.unshift( $past );
+        $past := $expr;
+    }
+
+    make $past;
+}
+
+method postfix_expression:sym<index>($/) {
+    my $index := $<EXPR>.ast;
+    my $past  := PAST::Var.new( $index,
+                                :scope('keyed'),
+                                :viviself('Undef'),
+                                :vivibase('ResizablePMCArray'),
+                                :node($/) );
+
+    make $past;
 }
 
 method identifier($/) {

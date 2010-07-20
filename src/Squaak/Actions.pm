@@ -173,7 +173,7 @@ method arguments($/) {
 
 method statement:sym<throw>($/) {
     make PAST::Op.new( $<EXPR>.ast,
-                       :pirop('throw'),
+                       :pirop('die'),
                        :node($/) );
 }
 

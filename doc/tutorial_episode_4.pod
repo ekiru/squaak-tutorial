@@ -189,11 +189,9 @@ representing the "throw" instruction.
 
     method statement:sym<throw>($/) {
         make PAST::Op.new( $<EXPR>.ast,
-                           :pirop('throw'),
+                           :pirop('die'),
                            :node($/) );
     }
-TODO(replace this with something that works)
-
 
 =head2 What's Next?
 

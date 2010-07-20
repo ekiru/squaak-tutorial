@@ -195,7 +195,7 @@ representing the "throw" instruction.
 
 =head2 What's Next?
 
-In this episode we implemented two more statement types of Squaak. You should
+In this episode we implemented two more Squaak statement types. You should
 get a general idea of how and when PAST nodes are created, and how they can be
 retrieved as sub (parse) trees. In the next episode we'll take a closer look at
 variable scope and subroutines.

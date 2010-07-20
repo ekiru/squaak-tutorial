@@ -60,8 +60,7 @@ constructed through a hashtable constructor. The syntax for this is expressed
 below:
 
  rule hash_constructor {
-     '{' [<named_field> [',' <named_field>]* ]? '}'
-     {*}
+     '{' <named_field> ** ',' <named_field> '}'
  }
 
  rule named_field {

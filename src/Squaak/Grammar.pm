@@ -139,8 +139,13 @@ token quote:sym<"> { <?["]> <quote_EXPR: ':qq'> }
 ## Operators
 
 INIT {
+    Squaak::Grammar.O(':prec<w>, :assoc<unary>', '%unary-negate');
+    Squaak::Grammar.O(':prec<v>, :assoc<unary>', '%unary-not');
     Squaak::Grammar.O(':prec<u>, :assoc<left>',  '%multiplicative');
     Squaak::Grammar.O(':prec<t>, :assoc<left>',  '%additive');
+    Squaak::Grammar.O(':prec<s>, :assoc<left>',  '%relational');
+    Squaak::Grammar.O(':prec<r>, :assoc<left>',  '%conjunction');
+    Squaak::Grammar.O(':prec<q>, :assoc<left>',  '%disjunction');
 }
 
 token circumfix:sym<( )> { '(' <.ws> <EXPR> ')' }

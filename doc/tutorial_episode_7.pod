@@ -266,35 +266,7 @@ delimiter. This is an ideal way to implement parenthesized expressions:
     # with the action method:
     method circumfix:sym<( )> { make $<EXPR>.ast; }
 
-By default, a subroutine invocation will be generated for each operator,
-in this case a call to C<circumfix:( )>. However, we are merely interested in
-the expression that has been parenthesized. The subroutine would merely return
-the expression. Instead, we can use the pirop attribute to specify what PIR
-operation should be generated; in this case that is the C<set> operation, which
-sets one register to the contents of another. This solution works fine, except
-that C<set> instructions are a bit of a waste. What happens is, the contents of
-some register is just copied to another register, which is then used in further
-code generation. This C<set> instruction might as well be optimized away.
-Currently, there are no optimizations implemented in the PCT.
-
-There is an alternative solution for adding grammar rules for the parenthesized
-expressions, by adding it as an alternative of term. The grammar rule term then
-ends up as:
-
- rule term {
-     | <float_constant> {*}     #= float_constant
-     | <integer_constant> {*}   #= integer_constant
-     | <string_constant&gt {*}  #= string_constant
-     | <primary> {*}            #= primary
-     | '(' <expression> ')' {*} #= expression
- }
-
-Of course, although we save one generated instruction, the parser will be
-slightly more inefficient, for reasons that we discussed at the beginning of
-this episode. Of course, you are free to decide for yourself how to implement
-this; this section just explains both methods. At some point, optimizations
-will be implemented in the PCT. I suspect "useless" instructions (such as the
-C<set> instruction we just saw) will then be removed.
+Circumfix operators are treated as terms by the operator-precedence parser, so it will parse as we want it to automatically.
 
 =head2 Expression parser's action method
 

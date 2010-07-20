@@ -146,6 +146,9 @@ token term:sym<float_constant_long> { # longer to work-around lack of LTM
     | \d* '.' \d+
     ]
 }
+token term:sym<primary> {
+    <primary>
+}
 
 proto token quote { <...> }
 token quote:sym<'> { <?[']> <quote_EXPR: ':q'> }

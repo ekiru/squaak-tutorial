@@ -298,6 +298,15 @@ method postfix_expression:sym<index>($/) {
     make $past;
 }
 
+method postfix_expression:sym<key>($/) {
+    my $key := $<expression>.ast;
+
+    make PAST::Var.new( $key, :scope('keyed'),
+                              :vivibase('Hash'),
+                              :viviself('Undef'),
+                              :node($/) );
+}
+
 method identifier($/) {
      our @?BLOCK;
      my $name  := ~$<ident>;

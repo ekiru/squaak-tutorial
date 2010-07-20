@@ -8,7 +8,7 @@
         $P0 = find_lex 'array'
         set_global '!array', $P0
         $P0 = find_lex 'hash'
-        set_global '!hash', $P1
+        set_global '!hash', $P0
     }
 }
 

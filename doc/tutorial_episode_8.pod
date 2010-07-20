@@ -67,6 +67,12 @@ below:
      <string_constant> '=>' <EXPR>
  }
 
+ # We need to rename our existing string_constant term to a separate rule
+ # so that we can use it specifically.
+ token term:sym<string_constant> { <string_constant> }
+
+ token string_constant { <quote> }
+
 Some examples are shown below:
 
     foo = {}

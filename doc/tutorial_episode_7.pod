@@ -124,19 +124,20 @@ NQP-rx supports this, and is used as follows:
  <EXPR>
 
 Of course, the optable must be populated with some operators that
-we need to be able to parse. This can be done by declaring operators as follows:
+we need to be able to parse and it might be told what precedence and associativity they have. The easiest way to do this is by setting up precedence levels in an C<INIT> block:
 
- proto 'infix:*' is tighter('infix:+') { ... }
+    INIT {
+        Squaak::Grammar.O(':prec<t>, :assoc<left>', '%additive');
+        Squaak::Grammar.O(':prec<u>, :assoc<lefT>', '%multiplicative');
+    }
+
+In this C<INIT> block, we use the C<O> method of the compiler to set up two precedence levels: one for operators like addition (named C<%additive>), and one for operators like multiplication (named C<%multiplicative>). Each of themhas a ":prec" value and an ":assoc" value. ":prec" determines the precedence. Lexicographically greater values indicate higher precedence, so C<%additive> operators, with a precedence value of "t", have lower precedence than C<%multiplicative> operators with a precedence value of "u".":assoc" defines the associativity of the operators. If C<@> is a left associative operator, then 1 @ 2 @ 3 is equivalent to (1 @ 2) @ 3. However, if C<@> is right associative, then 1 @ 2 @ 3 is equivalent to 1 @ (2 @ 3). There are other options for the associativity, but we'll discuss them as we come to them.
+
+    token infix:sym<*> { <sym> <O('%multiplicative, :pirop<mul>')> }
 
 This defines the operator C<*> (the C<infix:> is a prefix that tells the
 operator parser that this operator is an infix operator; there are other types,
-such as prefix, postfix and others). The C<is tighter> clause tells that the
-C<*> operator has a higher precedence than the C<+> operator. As you could have
-guessed, there are other clauses to declare equivalent precedence (C<is equiv>)
-and lower precedence (C<is looser>).It is very important to spell all clauses,
-such as C<is equiv> correctly (for instance, not C<is equil>), otherwise you
-might get some cryptic error message when trying to run your compiler. See the
-references section for the optable guide, that has more details on this.
+such as prefix, postfix and others). As you can see, it uses the O rule to specify that it is part of the C<%multiplicative> group of operators. The ":pirop" value specifies that the operator should compile to the C<mul> PIR opcode.
 
 Of course, the expression parser does not just parse operators, it must also
 parse the operands. So, how do we declare the most basic entity that represents
@@ -144,19 +145,10 @@ an operand? It can be anything, from a basic integer-constant, a function call,
 or even a function definition (but adding two function definition doesn't
 really make sense, does it?). The operands are parsed in a recursive-descent
 fashion, so somewhere the parser must switch back from bottom-up
-(expression parsing) to top-down. To declare this "switch-back" point, write:
+(expression parsing) to top-down. This "switch-back" point is the proto token C<term>. This is the reason why integer constants are parsed by the rule term:sym<integer_constant>, for example, in our grammar.
 
- proto 'term:' is tighter('prefix:-') is parsed(&term) { ... }
-
-The name C<term:> is a built-in name of the operator bottom-up parser; it is
-invoked every time a new operand is needed. The C<is parsed> clause tells the
-parser that C<term> (which accidentally looks like C<term:>, but you could also
-have named it anything else) parses the operands.
-
-Note: it is very important to add a C<is tighter> clause to the declaration of
-the C<term:> rule. Otherwise your expression parser will not work! My knowledge
-here is a bit limited, but I usually define it as C<is tighter> relative to the
-tightest operator defined.
+The C<term> proto token is
+invoked every time a new operand is needed
 
 =head2 Squaak Operators
 
@@ -177,10 +169,17 @@ mathematical operators are organized according to standard math rules).
  or
 
 (".." is the string concatenation operator). Besides defining an entry and exit
-point for the expression parser, you need to define some operator as a reference
-point, so that other operators' precedence can be defined relative to that
-reference point. My personal preference is to declare the operator with the
-lowest precedence as the reference point. This can be done like this:
+point for the expression parser, you need to define precedence levels for your operators. Find the C<INIT> block in Grammar.pm below the "## Operators" comment, and replace it with this:
+
+    INIT {
+        Squaak::Grammar.O(':prec<w>, :assoc<unary>', '%unary-negate');
+        Squaak::Grammar.O(':prec<v>, :assoc<unary>', '%unary-not');
+        Squaak::Grammar.O(':prec<u>, :assoc<left>',  '%multiplicative');
+        Squaak::Grammar.O(':prec<t>, :assoc<left>',  '%additive');
+        Squaak::Grammar.O(':prec<s>',                '%relational');
+        Squaak::Grammar.O(':prec<r>, :assoc<left>',  '%conjunction');
+        Squaak::Grammar.O(':prec<q>, :assoc<left>',  '%disjunction');
+    }
 
  proto 'infix:or' is precedence('1') { ... }
 

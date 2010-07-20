@@ -304,6 +304,9 @@ method term:sym<integer_constant>($/) {
 method term:sym<string_constant>($/) {
     make PAST::Val.new(:value($<quote>.ast), :returns<String>);
 }
+method term:sym<float_constant_long>($/) { # name worksaround lack of LTM
+    make PAST::Val.new(:value(+$/), :returns<Float>);
+}
 
 method quote:sym<'>($/) { make $<quote_EXPR>.ast; }
 method quote:sym<">($/) { make $<quote_EXPR>.ast; }

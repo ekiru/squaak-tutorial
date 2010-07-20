@@ -131,6 +131,12 @@ token keyword {
 
 token term:sym<integer_constant> { <integer> }
 token term:sym<string_constant> { <quote> }
+token term:sym<float_constant_long> { # longer to work-around lack of LTM
+    [
+    | \d+ '.' \d*
+    | \d* '.' \d+
+    ]
+}
 
 proto token quote { <...> }
 token quote:sym<'> { <?[']> <quote_EXPR: ':q'> }
@@ -154,12 +160,19 @@ token prefix:sym<-> { <sym> <O('%unary-negate, :pirop<neg>')> }
 token prefix:sym<not> { <sym> <O('%unary-not, :pirop<isfalse>')> }
 
 token infix:sym<*>  { <sym> <O('%multiplicative, :pirop<mul>')> }
+token infix:sym<%>  { <sym> <O('%multiplicative, :pirop<mod>')> }
 token infix:sym</>  { <sym> <O('%multiplicative, :pirop<div>')> }
 
 token infix:sym<+>  { <sym> <O('%additive, :pirop<add>')> }
 token infix:sym<->  { <sym> <O('%additive, :pirop<sub>')> }
+token infix:sym<..> { <sym> <O('%additive, :pirop<concat>')> }
 
-token infix:sym«<» { <sym> <O('%relational, :pirop<isle IPP>')> }
+token infix:sym«<» { <sym> <O('%relational, :pirop<isle>')> }
+token infix:sym«<=» { <sym> <O('%relational, :pirop<islt>')> }
+token infix:sym«>» { <sym> <O('%relational, :pirop<isgt>')> }
+token infix:sym«>=» { <sym> <O('%relational, :pirop<isge>')> }
+token infix:sym«==» { <sym> <O('%relational, :pirop<iseq>')> }
+token infix:sym«!=» { <sym> <O('%relational, :pirop<isne>')> }
 
 token infix:sym<and> { <sym> <O('%conjunction, :pasttype<if>')> }
 token infix:sym<or> { <sym> <O('%disjunction, :pasttype<unless>')> }

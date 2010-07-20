@@ -303,3 +303,5 @@ method term:sym<string_constant>($/) { make $<quote>.ast; }
 
 method quote:sym<'>($/) { make $<quote_EXPR>.ast; }
 method quote:sym<">($/) { make $<quote_EXPR>.ast; }
+
+method circumfix:sym<( )>($/) { make $<EXPR>.ast; }

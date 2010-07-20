@@ -176,7 +176,7 @@ point for the expression parser, you need to define precedence levels for your o
         Squaak::Grammar.O(':prec<v>, :assoc<unary>', '%unary-not');
         Squaak::Grammar.O(':prec<u>, :assoc<left>',  '%multiplicative');
         Squaak::Grammar.O(':prec<t>, :assoc<left>',  '%additive');
-        Squaak::Grammar.O(':prec<s>, :assoc<non>',   '%relational');
+        Squaak::Grammar.O(':prec<s>, :assoc<left>',  '%relational');
         Squaak::Grammar.O(':prec<r>, :assoc<left>',  '%conjunction');
         Squaak::Grammar.O(':prec<q>, :assoc<left>',  '%disjunction');
     }

@@ -203,7 +203,9 @@ Add action methods for term:sym<integer_constant> and term:sym<string_constant>:
         make PAST::Val.new(:value($<integer>.ast), :returns<Integer>);
     }
     method term:sym<string_constant>($/) {
-        make PAST::Val.new(:value($<quote>.ast), :returns<String>);
+        my $past := $<quote>.ast;
+        $past.returns('String');
+        make $past;
     }
     method term:sym<primary>($/) {
         make $<primary>.ast;

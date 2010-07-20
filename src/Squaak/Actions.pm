@@ -307,6 +307,22 @@ method postfix_expression:sym<key>($/) {
                               :node($/) );
 }
 
+method postfix_expression:sym<member>($/) {
+    my $member := $<identifier>.ast;
+    ## x.y is syntactic sugar for x{"y"},
+    ## so stringify the identifier:
+    my $key := PAST::Val.new( :returns('String'),
+                              :value($member.name),
+                              :node($/) );
+
+    ## the rest of this method is the same
+    ## as method key() above.
+    make PAST::Var.new( $key, :scope('keyed'),
+                        :vivibase('Hash'),
+                        :viviself('Undef'),
+                        :node($/) );
+}
+
 method identifier($/) {
      our @?BLOCK;
      my $name  := ~$<ident>;

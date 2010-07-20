@@ -126,6 +126,8 @@ rule postfix_expression:sym<index> { '[' <EXPR> ']' }
 
 rule postfix_expression:sym<key> { '{' <EXPR> '}' }
 
+rule postfix_expression:sym<member> { '.' <identifier> }
+
 token identifier {
     <!keyword> <ident>
 }

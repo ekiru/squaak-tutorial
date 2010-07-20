@@ -329,7 +329,8 @@ method identifier($/) {
 method term:sym<integer_constant>($/) {
     make PAST::Val.new(:value($<integer>.ast), :returns<Integer>);
 }
-method term:sym<string_constant>($/) {
+method term:sym<string_constant>($/) { make $<string_constant>.ast; }
+method string_constant($/) {
     make PAST::Val.new(:value($<quote>.ast), :returns<String>);
 }
 method term:sym<float_constant_long>($/) { # name worksaround lack of LTM
@@ -340,3 +341,39 @@ method quote:sym<'>($/) { make $<quote_EXPR>.ast; }
 method quote:sym<">($/) { make $<quote_EXPR>.ast; }
 
 method circumfix:sym<( )>($/) { make $<EXPR>.ast; }
+
+method named_field($/) {
+    my $past := $<EXPR>.ast;
+    my $name := $<string_constant>.ast;
+    ## the passed expression is in fact a named argument,
+    ## use the named() accessor to set that name.
+    $past.named($name);
+    make $past;
+}
+
+method circumfix:sym<[ ]>($/) {
+    ## use the parrot calling conventions to
+    ## create an array,
+    ## using the "anonymous" sub !array
+    ## (which is not a valid Squaak name)
+    my $past := PAST::Op.new( :name('!array'),
+                              :pasttype('call'),
+                              :node($/) );
+    for $<EXPR> {
+        $past.push($_.ast);
+    }
+    make $past;
+}
+
+method circumfix:sym<{ }>($/) {
+    ## use the parrot calling conventions to
+    ## create a hash, using the "anonymous" sub
+    ## !hash (which is not a valid Squaak name)
+    my $past := PAST::Op.new( :name('!hash'),
+                              :pasttype('call'),
+                              :node($/) );
+    for $<named_field> {
+        $past.push($_.ast);
+    }
+    make $past;
+}

@@ -245,18 +245,11 @@ operator's operands as arguments. Neat huh? Let's look at an example:
 
     token infix:sym<+> { <sym> <O('%additive, :pirop<add>')> }
 
-This specifies to use the C<n_add> instruction, which tells Parrot to create a
-new result object instead of changing one of the operands. Why not just the
-C<add> instruction (which takes two operands, updating the first), you might
-think. Well, if you leave out this C<is pirop> stuff, this will be generated:
+This specifies to use the C<add> instruction, which tells Parrot to create a
+new result object instead of changing one of the operands. PCT
+just emits the following for this:
 
- $P12 = "infix:+"($P10, $P11)
-
-You see, three registers are involved. As we mentioned before, PCT does not do
-any optimizations. Therefore, instead of the generated instruction above, it
-just emit the following:
-
- n_add $P12, $P10, $P11
+ add $P12, $P10, $P11
 
 which means that the PMCs in registers C<$P10> and C<$P11> are added, and
 assigned to a newly created PMC which is stored in register C<$P12>.

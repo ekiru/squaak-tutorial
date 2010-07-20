@@ -150,11 +150,11 @@ INIT {
 
 token circumfix:sym<( )> { '(' <.ws> <EXPR> ')' }
 
-token infix:sym<or> { <sym> <O('%disjunction, :pasttype<unless>')> }
-token infix:sym<and> { <sym> <O('%conjunction, :pasttype<if>')> }
-
 token infix:sym<*>  { <sym> <O('%multiplicative, :pirop<mul>')> }
 token infix:sym</>  { <sym> <O('%multiplicative, :pirop<div>')> }
 
 token infix:sym<+>  { <sym> <O('%additive, :pirop<add>')> }
 token infix:sym<->  { <sym> <O('%additive, :pirop<sub>')> }
+
+token infix:sym<and> { <sym> <O('%conjunction, :pasttype<if>')> }
+token infix:sym<or> { <sym> <O('%disjunction, :pasttype<unless>')> }

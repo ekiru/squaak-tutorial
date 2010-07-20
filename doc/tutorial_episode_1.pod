@@ -128,13 +128,13 @@ Parrot comes with a special shell script to generate the necessary files for a
 language implementation. In order to generate these files for our language,
 type (assuming you're in Parrot's root directory):
 
- $ perl tools/dev/mk_language_shell.pl Squaak languages/squaak
+ $ perl tools/dev/mk_language_shell.pl Squaak ~/src/squaak
 
 (Note: if you're on Windows, you should use backslashes.) This will generate the
-files in a directory F<languages/squaak>, and use the name Squaak as the language's
+files in a directory F<~/src/squaak>, and use the name Squaak as the language's
 name.
 
-After this, go to the directory F<languages/squaak> and type:
+After this, go to the directory F<~/src/squaak> and type:
 
  $ parrot setup.pir test
 
@@ -215,7 +215,7 @@ will be posted several days after the episode.
 =head3 Advanced interactive mode.
 
 Launch your favorite editor and look at the file Compiler.pm in the directory
-languages/squaak/src/Squaak/. This file contains the main function (entry point) of the
+F<~/src/squaak/src/Squaak/>. This file contains the main function (entry point) of the
 compiler. The class HLLCcompiler defines methods to set a command-line banner
 and prompt for your compiler when it is running in interactive mode. For
 instance, when you run Python in interactive mode, you'll see:
@@ -245,7 +245,7 @@ Hint 2: Note that only double-quoted strings in NQP can interpret
 escape-characters such as '\n'.
 
 Hint 3: The functions to do this are documented in
-compilers/pct/src/PCT/HLLCompiler.pir.
+F<compilers/pct/src/PCT/HLLCompiler.pir>.
 
 =head2 References
 

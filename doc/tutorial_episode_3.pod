@@ -195,8 +195,6 @@ Add these rules:
 Rename the token C<term:sym<integer> > as C<term:sym<integer_constant> >, and C<term:sym<quote> > as
 C<term:sym<string_constant> > (to better match our language specification).
 
-# TODO Briefly explain the operator-precedence parser and terms and protos.
-
 Add action methods for term:sym<integer_constant> and term:sym<string_constant>:
 
     method term:sym<integer_constant>($/) {
@@ -225,6 +223,8 @@ and identifiers), and use a rule if your string does (and should) contain
 whitespace (such as a an if-statement). We shall use the word C<rule> in a
 general sense, which could refer to a token. For more information on rules and
 tokens (and there's a third type, called C<regex>), take a look at synopsis 5.
+
+In rule C<assignment>, the <EXPR> subrule is one that we haven't defined. The EXPR rule is inherited from HLL::Grammar, and it initiates the grammar's operator-precedence parser to parse an expression. For now, don't worry about it. All you need to know is that it will give us one of our terms.
 
 In token C<identifier>, the first subrule is called an assertion. It asserts
 that an C<identifier> does not match the rule keyword. In other words, a keyword

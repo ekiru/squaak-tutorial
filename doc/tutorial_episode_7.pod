@@ -257,8 +257,7 @@ assigned to a newly created PMC which is stored in register C<$P12>.
 =head2 To circumfix or not to circumfix
 
 Squaak supports parenthesized expressions. Parentheses can be used to change
-the order of evaluation in an expression, just as you're probably have seen
-this in other languages. Besides infix, prefix and postfix operators, you can
+the order of evaluation in an expression, just as you probably have seen in other languages. Besides infix, prefix and postfix operators, you can
 define circumfix operators, which is specified with the left and right
 delimiter. This is an ideal way to implement parenthesized expressions:
 

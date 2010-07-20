@@ -266,6 +266,7 @@ delimiter. This is an ideal way to implement parenthesized expressions:
     # with the action method:
     method circumfix:sym<( )> { make $<EXPR>.ast; }
 
+This rule and action method were generated for us when we ran mk_language_shell.pl; you don't need to add them to the grammar and actions yourself.
 Circumfix operators are treated as terms by the operator-precedence parser, so it will parse as we want it to automatically.
 
 =head2 Expression parser's action method

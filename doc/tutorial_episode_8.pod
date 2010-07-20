@@ -38,8 +38,7 @@ that can be assigned to variables, you can have array literals. Below is the
 grammar rule for this:
 
  rule array_constructor {
-     '[' [ <expression> [',' <expression>]*]? ']'
-     {*}
+     '[' <expression> ** ',' ']'
  }
 
 Some examples are shown below:

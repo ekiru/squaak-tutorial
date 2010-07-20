@@ -65,7 +65,6 @@ below:
 
  rule named_field {
      <string_constant> '=>' <expression>
-     {*}
  }
 
 Some examples are shown below:

@@ -38,7 +38,7 @@ that can be assigned to variables, you can have array literals. Below is the
 grammar rule for this:
 
  rule circumfix:sym<[ ]> {
-     '[' <EXPR> ** ',' ']'
+     '[' [<EXPR> ** ',']? ']'
  }
 
 Some examples are shown below:
@@ -60,7 +60,7 @@ constructed through a hashtable constructor. The syntax for this is expressed
 below:
 
  rule circumfix:sym<{ }> {
-     '{' <named_field> ** ',' '}'
+     '{' [<named_field> ** ',']? '}'
  }
 
  rule named_field {

@@ -164,11 +164,11 @@ INIT {
 token circumfix:sym<( )> { '(' <.ws> <EXPR> ')' }
 
 rule circumfix:sym<[ ]> {
-    '[' <EXPR> ** ',' ']'
+    '[' [<EXPR> ** ',']? ']'
 }
 
 rule circumfix:sym<{ }> {
-    '{' <named_field> ** ',' '}'
+    '{' [<named_field> ** ',']? '}'
 }
 
 rule named_field {

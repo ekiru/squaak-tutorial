@@ -150,6 +150,9 @@ INIT {
 
 token circumfix:sym<( )> { '(' <.ws> <EXPR> ')' }
 
+token prefix:sym<-> { <sym> <O('%unary-negate, :pirop<neg>')> }
+token prefix:sym<not> { <sym> <O('%unary-not, :pirop<isfalse>')> }
+
 token infix:sym<*>  { <sym> <O('%multiplicative, :pirop<mul>')> }
 token infix:sym</>  { <sym> <O('%multiplicative, :pirop<div>')> }
 

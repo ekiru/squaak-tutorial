@@ -223,17 +223,10 @@ to true, evaluate the second child. Guess what pasttype you'd need for that!
 
 =head2 Operators PAST types and PIR instructions
 
-# TODO Update the default result. Pretty sure it goes to action method but check.
-
 In the previous section, we introduced the C<pasttype> clause that you can
 specify. This means that for that operator (for instance, the C<and> operator
 we discussed), a C<PAST::Op( :pasttype('if') )> node is created. What happens
-if you don't specify a pasttype? In that case a default C<PAST::Op> node is
-created, and the default pasttype is C<call>. In other words, a C<PAST::Op>
-node is created that calls the declared operator. For instance, the C<infix:+>
-operator results in a call to the subroutine "infix:+". This means you'll need
-to implement subroutines for each operator. Now, that's a bit of a shame.
-Obviously, some languages have very exotic semantics for the C<+> operator,
+if you don't specify a pasttype? In that case, the corresponding action method is called. Obviously, some languages have very exotic semantics for the C<+> operator,
 but many languages just want to use Parrot's built-in C<add> instruction. How
 do we achieve that?
 

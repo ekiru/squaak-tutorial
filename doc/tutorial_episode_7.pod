@@ -261,7 +261,10 @@ the order of evaluation in an expression, just as you probably have seen in othe
 define circumfix operators, which is specified with the left and right
 delimiter. This is an ideal way to implement parenthesized expressions:
 
- proto 'circumfix:( )' is looser('infix:+') is pirop('set') { ... }
+    token circumfix:sym<( )> { '(' <.ws> <EXPR> ')' }
+
+    # with the action method:
+    method circumfix:sym<( )> { make $<EXPR>.ast; }
 
 By default, a subroutine invocation will be generated for each operator,
 in this case a call to C<circumfix:( )>. However, we are merely interested in

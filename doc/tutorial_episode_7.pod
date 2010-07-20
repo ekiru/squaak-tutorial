@@ -13,7 +13,7 @@ expressions.
 =head2 Operators, precedence and parse trees
 
 We will first briefly introduce the problem with recursive-descent parsers
-(which parsers generated with the PCT are) when parsing expressions. Consider
+(which parsers generated with NQP are) when parsing expressions. Consider
 the following mini-grammar, which is a very basic calculator.
 
  rule TOP {
@@ -116,16 +116,14 @@ into account. However, it's been about 6 years that I did this in a CS class,
 and I don't remember the particular details. If you really want to know, check
 out the links at the end of the previous section. It's actually worth checking
 out. For now, I'll just assume you know what the problem is, so that I'll
-introduce the solution for PCT-based compilers immediately.
+introduce the solution for NQP-based compilers immediately.
 At some point when parsing your input, you might encounter an expression. At
 this point, we'd like the parser to switch from top-down to bottom-up parsing.
-The Parrot Grammar Engine supports this, and is used as follows:
+NQP-rx supports this, and is used as follows:
 
- rule expression is optable { ... }
+ <EXPR>
 
-Note that we used the word C<expression> here, but you can name it anything.
-This declares that, whenever you need an expression, the bottom-up parser is
-activated. Of course, this "optable" must be populated with some operators that
+Of course, the optable must be populated with some operators that
 we need to be able to parse. This can be done by declaring operators as follows:
 
  proto 'infix:*' is tighter('infix:+') { ... }

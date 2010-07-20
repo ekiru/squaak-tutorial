@@ -318,8 +318,8 @@ Hint: use a C<PAST::Val> node for the string conversion.
 =item 2
 
     method named_field($/) {
-        my $past := $( $<expression> );
-        my $name := $( $<string_constant> );
+        my $past := $<EXPR>.ast;
+        my $name := $<string_constant>.ast;
         ## the passed expression is in fact a named argument,
         ## use the named() accessor to set that name.
         $past.named($name);
@@ -334,7 +334,7 @@ Hint: use a C<PAST::Val> node for the string conversion.
         my $past := PAST::Op.new( :name('!array'),
                                   :pasttype('call'),
                                   :node($/) );
-        for $<expression> {
+        for $<EXPR> {
             $past.push($($_));
         }
         make $past;

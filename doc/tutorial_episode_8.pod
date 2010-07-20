@@ -37,7 +37,7 @@ Just as there are integer literals (42) and string literals ("hello world")
 that can be assigned to variables, you can have array literals. Below is the
 grammar rule for this:
 
- token circumfix:sym<[ ]> {
+ rule circumfix:sym<[ ]> {
      '[' <EXPR> ** ',' ']'
  }
 
@@ -60,7 +60,7 @@ constructed through a hashtable constructor. The syntax for this is expressed
 below:
 
  rule circumfix:sym<{ }> {
-     '{' <named_field> ** ',' <named_field> '}'
+     '{' <named_field> ** ',' '}'
  }
 
  rule named_field {
@@ -71,6 +71,7 @@ below:
  # so that we can use it specifically.
  token term:sym<string_constant> { <string_constant> }
 
+ # Don't forget to rename the action method.
  token string_constant { <quote> }
 
 Some examples are shown below:
@@ -323,6 +324,8 @@ Hint: use a C<PAST::Val> node for the string conversion.
 
 =item 2
 
+    method term:sym<string_constant>($/) { make $<string_constant>.ast; }
+
     method named_field($/) {
         my $past := $<EXPR>.ast;
         my $name := $<string_constant>.ast;
@@ -332,7 +335,7 @@ Hint: use a C<PAST::Val> node for the string conversion.
         make $past;
     }
 
-    method array_constructor($/) {
+    method circumfix:<[ ]>($/) {
         ## use the parrot calling conventions to
         ## create an array,
         ## using the "anonymous" sub !array
@@ -341,12 +344,12 @@ Hint: use a C<PAST::Val> node for the string conversion.
                                   :pasttype('call'),
                                   :node($/) );
         for $<EXPR> {
-            $past.push($($_));
+            $past.push($_.ast);
         }
         make $past;
     }
 
-    method hash_constructor($/) {
+    method circumfix:sym<{ }>($/) {
         ## use the parrot calling conventions to
         ## create a hash, using the "anonymous" sub
         ## !hash (which is not a valid Squaak name)
@@ -354,7 +357,7 @@ Hint: use a C<PAST::Val> node for the string conversion.
                                   :pasttype('call'),
                                   :node($/) );
         for $<named_field> {
-            $past.push($($_));
+            $past.push($_.ast);
         }
         make $past;
     }

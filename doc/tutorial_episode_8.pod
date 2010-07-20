@@ -37,8 +37,8 @@ Just as there are integer literals (42) and string literals ("hello world")
 that can be assigned to variables, you can have array literals. Below is the
 grammar rule for this:
 
- rule array_constructor {
-     '[' <expression> ** ',' ']'
+ rule circumfix:sym<[ ]> {
+     '[' [<EXPR> ** ',']? ']'
  }
 
 Some examples are shown below:
@@ -59,13 +59,20 @@ Besides array literals, Squaak supports hashtable literals, that can be
 constructed through a hashtable constructor. The syntax for this is expressed
 below:
 
- rule hash_constructor {
-     '{' <named_field> ** ',' <named_field> '}'
+ rule circumfix:sym<{ }> {
+     '{' [<named_field> ** ',']? '}'
  }
 
  rule named_field {
-     <string_constant> '=>' <expression>
+     <string_constant> '=>' <EXPR>
  }
+
+ # We need to rename our existing string_constant term to a separate rule
+ # so that we can use it specifically.
+ token term:sym<string_constant> { <string_constant> }
+
+ # Don't forget to rename the action method.
+ token string_constant { <quote> }
 
 Some examples are shown below:
 
@@ -206,15 +213,19 @@ parameter, Parrot creates an array, while for the named slurpy parameter a
 hashtable is created. This happens to be exactly what we need! Implementing
 the array and hash constructors becomes trivial:
 
- .sub '!array'
-     .param pmc fields :slurpy
-     .return (fields)
- .end
+ # Inset this in src/Squaak/Runtime.pm
 
- .sub '!hash'
-     .param pmc fields :named :slurpy
-     .return (fields)
- .end
+ {
+     my sub array (*@args) { @args; }
+     my sub hash (*%args) { %args; }
+
+     Q:PIR {
+         $P0 = find_lex 'array'
+         set_global '!array', $P0
+         $P0 = find_lex 'hash'
+         set_global '!hash', $P1
+     }
+ }
 
 Array and hashtable constructors can then be compiled into subroutine calls to
 the respective Parrot subroutines, passing all fields as arguments. (Note that
@@ -223,8 +234,8 @@ prevents us from calling these subs in normal Squaak code).
 
 =head2 Basic data types and Aggregates as arguments
 
-All data types, both basic and aggregate data types are represented by Parrot
-Magic Cookies (PMCs). The PMC is one of the four built-in data types that Parrot
+All data types, both basic and aggregate data types are represented by Polymorphic
+Containers (PMCs). The PMC is one of the four built-in data types that Parrot
 can handle; the others are integer, floating-point and string. Currently, the
 PCT can only generate code to handle PMCs, not the other basic data types.
 Parrot has registers for each its four built-in data types. The integer,
@@ -277,7 +288,7 @@ for hashtables. Implement the action method for key.
 
 =item *
 
-Implement the action methods for array_constructor and hash_constructor. Use a
+Implement the action methods for circumfix:sym<[ ]> and circumfix:sym<{ }>. Use a
 C<PAST::Op> node and set the pasttype to 'call'. Use the "name" attribute to
 specify the names of the subs to be invoked (e.g., C<:name("!array")> ). Note
 that all hash fields must be passed as named arguments. Check out PDD26 for
@@ -302,27 +313,29 @@ Hint: use a C<PAST::Val> node for the string conversion.
 
 =item 1
 
-    method key($/) {
-    my $key := $( $<expression> );
+    method postfix_expression:sym<key>($/) {
+        my $key := $<expression>.ast;
 
-    make PAST::Var.new( $key, :scope('keyed'),
-                              :vivibase('Hash'),
-                              :viviself('Undef'),
-                              :node($/) );
+        make PAST::Var.new( $key, :scope('keyed'),
+                                  :vivibase('Hash'),
+                                  :viviself('Undef'),
+                                  :node($/) );
     }
 
 =item 2
 
+    method term:sym<string_constant>($/) { make $<string_constant>.ast; }
+
     method named_field($/) {
-        my $past := $( $<expression> );
-        my $name := $( $<string_constant> );
+        my $past := $<EXPR>.ast;
+        my $name := $<string_constant>.ast;
         ## the passed expression is in fact a named argument,
         ## use the named() accessor to set that name.
         $past.named($name);
         make $past;
     }
 
-    method array_constructor($/) {
+    method circumfix:sym<[ ]>($/) {
         ## use the parrot calling conventions to
         ## create an array,
         ## using the "anonymous" sub !array
@@ -330,13 +343,13 @@ Hint: use a C<PAST::Val> node for the string conversion.
         my $past := PAST::Op.new( :name('!array'),
                                   :pasttype('call'),
                                   :node($/) );
-        for $<expression> {
-            $past.push($($_));
+        for $<EXPR> {
+            $past.push($_.ast);
         }
         make $past;
     }
 
-    method hash_constructor($/) {
+    method circumfix:sym<{ }>($/) {
         ## use the parrot calling conventions to
         ## create a hash, using the "anonymous" sub
         ## !hash (which is not a valid Squaak name)
@@ -344,31 +357,25 @@ Hint: use a C<PAST::Val> node for the string conversion.
                                   :pasttype('call'),
                                   :node($/) );
         for $<named_field> {
-            $past.push($($_));
+            $past.push($_.ast);
         }
         make $past;
     }
 
 =item 3
 
-    rule postfix_expression {
-        | <key> {*}         #= key
-        | <member> {*}      #= member
-        | <index> {*}       #= index
-    }
 
-    rule member {
+    rule postfix_expression:sym<member> {
         '.' <identifier>
-        {*}
     }
 
-    method member($/) {
-        my $member := $( $<identifier> );
+    method postfix_expression:sym<member>($/) {
+        my $member := $<identifier>.ast;
         ## x.y is syntactic sugar for x{"y"},
         ## so stringify the identifier:
-        my $key    := PAST::Val.new( :returns('String'),
-                                     :value($member.name()),
-                                     :node($/) );
+        my $key := PAST::Val.new( :returns('String'),
+                                  :value($member.name),
+                                  :node($/) );
 
         ## the rest of this method is the same
         ## as method key() above.

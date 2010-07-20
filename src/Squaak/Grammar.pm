@@ -126,6 +126,8 @@ rule postfix_expression:sym<index> { '[' <EXPR> ']' }
 
 rule postfix_expression:sym<key> { '{' <EXPR> '}' }
 
+rule postfix_expression:sym<member> { '.' <identifier> }
+
 token identifier {
     <!keyword> <ident>
 }
@@ -136,7 +138,8 @@ token keyword {
 }
 
 token term:sym<integer_constant> { <integer> }
-token term:sym<string_constant> { <quote> }
+token term:sym<string_constant> { <string_constant> }
+token string_constant { <quote> }
 token term:sym<float_constant_long> { # longer to work-around lack of LTM
     [
     | \d+ '.' \d*
@@ -161,6 +164,18 @@ INIT {
 }
 
 token circumfix:sym<( )> { '(' <.ws> <EXPR> ')' }
+
+rule circumfix:sym<[ ]> {
+    '[' [<EXPR> ** ',']? ']'
+}
+
+rule circumfix:sym<{ }> {
+    '{' [<named_field> ** ',']? '}'
+}
+
+rule named_field {
+    <string_constant> '=>' <EXPR>
+}
 
 token prefix:sym<-> { <sym> <O('%unary-negate, :pirop<neg>')> }
 token prefix:sym<not> { <sym> <O('%unary-not, :pirop<isfalse>')> }

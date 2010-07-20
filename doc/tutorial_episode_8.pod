@@ -364,24 +364,18 @@ Hint: use a C<PAST::Val> node for the string conversion.
 
 =item 3
 
-    rule postfix_expression {
-        | <key> {*}         #= key
-        | <member> {*}      #= member
-        | <index> {*}       #= index
-    }
 
-    rule member {
+    rule postfix_expression:sym<member> {
         '.' <identifier>
-        {*}
     }
 
-    method member($/) {
-        my $member := $( $<identifier> );
+    method postfix_expression:sym<member>($/) {
+        my $member := $<identifier>.ast;
         ## x.y is syntactic sugar for x{"y"},
         ## so stringify the identifier:
-        my $key    := PAST::Val.new( :returns('String'),
-                                     :value($member.name()),
-                                     :node($/) );
+        my $key := PAST::Val.new( :returns('String'),
+                                  :value($member.name),
+                                  :node($/) );
 
         ## the rest of this method is the same
         ## as method key() above.

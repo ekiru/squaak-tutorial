@@ -131,10 +131,10 @@ Here's where the updated action method for primary comes in.
 This is shown below.
 
  method primary($/) {
-     my $past := $( $<identifier> );
+     my $past := $<identifier>.ast;
 
      for $<postfix_expression> {
-         my $expr := $( $_ );
+         my $expr := $_.ast;
          $expr.unshift( $past );
          $past := $expr;
      }

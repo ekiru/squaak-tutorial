@@ -298,8 +298,12 @@ method identifier($/) {
                          :node($/) );
 }
 
-method term:sym<integer_constant>($/) { make $<integer>.ast; }
-method term:sym<string_constant>($/) { make $<quote>.ast; }
+method term:sym<integer_constant>($/) {
+    make PAST::Val.new(:value($<integer>.ast), :returns<Integer>);
+}
+method term:sym<string_constant>($/) {
+    make PAST::Val.new(:value($<quote>.ast), :returns<String>);
+}
 
 method quote:sym<'>($/) { make $<quote_EXPR>.ast; }
 method quote:sym<">($/) { make $<quote_EXPR>.ast; }

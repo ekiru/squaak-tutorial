@@ -303,21 +303,7 @@ you understand the difference between a "rule" and a "token".
 
 Hint: a floating-point constant should produce a value of type 'Float'.
 
-Hint: currently, the Parrot Grammar Engine (PGE), the component that "executes"
-the regular expressions (your grammar rules), matches alternative subrules in
-order. This means that this won't work:
-
- rule term {
-     | <integer_constant>
-     | <float_constant>
-     ...
- }
-
-because when giving the input C<42.0>, C<42> will be matched by
-<integer_constant>, and the dot and "0" will remain. Therefore, put the
-<float_constant> alternative in rule term before <integer_constant>.
-At some point, PGE will support I<longest-token matching>, so that this issue
-will disappear.
+Note: in Perl 6 regexes, when matching an alternation as in a proto rule, the alternative which matches the most of the string is supposed to match. However, NQP-rx does not yet implement this. As a work-around, NQP-rx specifies that the version of a proto regex with the longest name will match. Since the part of a floating-point constant before the decimal place is the same as an integer constant, unless the token for floating-point constants has a longer name than the token for integer-constants, the latter will match and a syntax error will result.
 
 =item *
 
@@ -344,12 +330,18 @@ difference between a C<rule> and a C<token>.
 
 Hint: a floating-point constant should produce a value of type 'Float'.
 
-    token float_constant {
+Note: in Perl 6 regexes, when matching an alternation as in a proto rule, the alternative which matches the most of the string is supposed to match. However, NQP-rx does not yet implement this. As a work-around, NQP-rx specifies that the version of a proto regex with the longest name will match. Since the part of a floating-point constant before the decimal place is the same as an integer constant, unless the token for floating-point constants has a longer name than the token for integer-constants, the latter will match and a syntax error will result.
+
+    token term:sym<float_constant_long> { # longer to work around lack of LTM
         [
         | \d+ '.' \d*
         | \d* '.' \d+
         ]
-        {*}
+    }
+
+    # with action method:
+    method term:sym<float_constant_long>($/) { # name worksaround lack of LTM
+        make PAST::Val.new(:value(+$/), :returns<Float>);
     }
 
 =item 2
@@ -357,43 +349,38 @@ Hint: a floating-point constant should produce a value of type 'Float'.
 For sake of completeness (and easy copy-paste for you), here's the list of
 operator declarations as I wrote them for Squaak:
 
-    rule expression    is optable              { ... }
+    INIT {
+        Squaak::Grammar.O(':prec<w>, :assoc<unary>', '%unary-negate');
+        Squaak::Grammar.O(':prec<v>, :assoc<unary>', '%unary-not');
+        Squaak::Grammar.O(':prec<u>, :assoc<left>',  '%multiplicative');
+        Squaak::Grammar.O(':prec<t>, :assoc<left>',  '%additive');
+        Squaak::Grammar.O(':prec<s>, :assoc<left>',  '%relational');
+        Squaak::Grammar.O(':prec<r>, :assoc<left>',  '%conjunction');
+        Squaak::Grammar.O(':prec<q>, :assoc<left>',  '%disjunction');
+    }
 
-    proto 'infix:or'   is precedence('1')
-                       is pasttype('unless')   { ... }
-    proto 'infix:and'  is tighter('infix:or')
-                       is pasttype('if')       { ... }
+    token circumfix:sym<( )> { '(' <.ws> <EXPR> ')' }
 
-    proto 'infix:<'    is tighter('infix:and') { ... }
-    proto 'infix:<='   is equiv('infix:<')     { ... }
-    proto 'infix:>'    is equiv('infix:<')     { ... }
-    proto 'infix:>='   is equiv('infix:<')     { ... }
-    proto 'infix:=='   is equiv('infix:<')     { ... }
-    proto 'infix:!='   is equiv('infix:<')     { ... }
+    token prefix:sym<-> { <sym> <O('%unary-negate, :pirop<neg>')> }
+    token prefix:sym<not> { <sym> <O('%unary-not, :pirop<isfalse>')> }
 
-    proto 'infix:+'    is tighter('infix:<')
-                       is pirop('n_add')       { ... }
-    proto 'infix:-'    is equiv('infix:+')
-                       is pirop('n_sub')       { ... }
+    token infix:sym<*>  { <sym> <O('%multiplicative, :pirop<mul>')> }
+    token infix:sym<%>  { <sym> <O('%multiplicative, :pirop<mod>')> }
+    token infix:sym</>  { <sym> <O('%multiplicative, :pirop<div>')> }
 
-    proto 'infix:..'   is equiv('infix:+')
-                       is pirop('n_concat')    { ... }
+    token infix:sym<+>  { <sym> <O('%additive, :pirop<add>')> }
+    token infix:sym<->  { <sym> <O('%additive, :pirop<sub>')> }
+    token infix:sym<..> { <sym> <O('%additive, :pirop<concat>')> }
 
-    proto 'infix:*'    is tighter('infix:+')
-                       is pirop('n_mul')       { ... }
-    proto 'infix:%'    is equiv('infix:*')
-                       is pirop('n_mod')       { ... }
-    proto 'infix:/'    is equiv('infix:*')
-                       is pirop('n_div')       { ... }
+    token infix:sym«<» { <sym> <O('%relational, :pirop<isle>')> }
+    token infix:sym«<=» { <sym> <O('%relational, :pirop<islt>')> }
+    token infix:sym«>» { <sym> <O('%relational, :pirop<isgt>')> }
+    token infix:sym«>=» { <sym> <O('%relational, :pirop<isge>')> }
+    token infix:sym«==» { <sym> <O('%relational, :pirop<iseq>')> }
+    token infix:sym«!=» { <sym> <O('%relational, :pirop<isne>')> }
 
-    proto 'prefix:not' is tighter('infix:*')
-                       is pirop('not')       { ... }
-    proto 'prefix:-'   is tighter('prefix:not')
-                       is pirop('neg')       { ... }
-
-    proto 'term:'      is tighter('prefix:-')
-                       is parsed(&term)        { ... }
-
+    token infix:sym<and> { <sym> <O('%conjunction, :pasttype<if>')> }
+    token infix:sym<or> { <sym> <O('%disjunction, :pasttype<unless>')> }
 
 =back
 

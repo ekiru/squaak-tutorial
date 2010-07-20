@@ -306,13 +306,13 @@ Hint: use a C<PAST::Val> node for the string conversion.
 
 =item 1
 
-    method key($/) {
-    my $key := $( $<expression> );
+    method postfix_expression:sym<key>($/) {
+        my $key := $<expression>.ast;
 
-    make PAST::Var.new( $key, :scope('keyed'),
-                              :vivibase('Hash'),
-                              :viviself('Undef'),
-                              :node($/) );
+        make PAST::Var.new( $key, :scope('keyed'),
+                                  :vivibase('Hash'),
+                                  :viviself('Undef'),
+                                  :node($/) );
     }
 
 =item 2

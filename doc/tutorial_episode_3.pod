@@ -202,6 +202,8 @@ Add these rules:
 Rename the token C<term:sym<integer> > as C<term:sym<integer_constant> >, and C<term:sym<quote> > as
 C<term:sym<string_constant> > (to better match our language specification).
 
+# TODO Briefly explain the operator-precedence parser and terms and protos.
+
 Finally, remove the rules C<proto token statement_control>, C<rule statement_control:sym<say> >, and <rule statement_control:sym<print> >.
 
 Phew, that was a lot of information! Let's have a closer look at some things

@@ -90,20 +90,11 @@ straightforward. First, we're going to update the grammar rule for primary:
      <identifier> <postfix_expression>*
  }
 
- rule postfix_expression {
-     | <index> {*}   #= index
-     | <key> {*}     #= key
- }
+ proto rule postfix_expression { <...> }
 
- rule index {
-     '[' <expression> ']'
-     {*}
- }
+ rule postfix_expression:sym<index> { '[' <EXPR> ']' }
 
- rule key {
-     '{' <expression> '}'
-     {*}
- }
+ rule postfix_expression:sym<key> { '{' <EXPR> '}' }
 
 A primary object is now an identifier followed by any number of
 postfix-expressions. A postfix expression is either a hashtable key or an array

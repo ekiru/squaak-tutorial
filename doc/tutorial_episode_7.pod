@@ -176,25 +176,22 @@ point for the expression parser, you need to define precedence levels for your o
         Squaak::Grammar.O(':prec<v>, :assoc<unary>', '%unary-not');
         Squaak::Grammar.O(':prec<u>, :assoc<left>',  '%multiplicative');
         Squaak::Grammar.O(':prec<t>, :assoc<left>',  '%additive');
-        Squaak::Grammar.O(':prec<s>',                '%relational');
+        Squaak::Grammar.O(':prec<s>, :assoc<non>',   '%relational');
         Squaak::Grammar.O(':prec<r>, :assoc<left>',  '%conjunction');
         Squaak::Grammar.O(':prec<q>, :assoc<left>',  '%disjunction');
     }
 
- proto 'infix:or' is precedence('1') { ... }
+Now, we need to define the actual operators:
 
-Now, other operators can be defined:
-
- proto 'infix:and'  is tighter('infix:or')   { ... }
- proto 'infix:<'    is tighter('infix:and')  { ... }
- proto 'infix:+'    is tighter('infix:<')    { ... }
- proto 'infix:*'    is tighter('infix:+')    { ... }
- proto 'prefix:not' is tighter('infix:*')    { ... }
- proto 'prefix:-'   is tighter('prefix:not') { ... }
+    token infix:sym<or> { <sym> <O('%disjunction, :pasttype<unless>')> }
+    token infix:sym<and> { <sym> <O('%conjunction, :pasttype<if>')> }
+    token infix:sym«<» { <sym> <O('%relational, :pirop<isle IPP>')> }
+    token infix:sym<+> { <sym> <O('%additive, :pirop<add>')> }
+    token infix:sym<*> { <sym> <O('%multiplicative, :pirop<mul>')> }
+    token prefix:sym<not> { <sym> <O('%unary-not, :pirop<isfalse>')> }
+    token prefix:sym<-> { <sym> <O('%unary-negate, :pirop<neg>')> }
 
 Note that some operators are missing. See the exercises section for this.
-For more details on the use of the optable, check out
-F<docs/pct/pct_optable_guide.pod> in the Parrot repository.
 
 =head2 Short-circuiting logical operators
 

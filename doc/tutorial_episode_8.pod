@@ -108,8 +108,8 @@ hashtable, and that foo{"key"} yields an array, and so forth. Implementing this
 is actually quite simple. First, let us see how to implement the action method
 index.
 
- method index($/) {
-     my $index := $( $<expression> );
+ method postfix_expression:sym<index>($/) {
+     my $index := $<EXPR>.ast;
      my $past  := PAST::Var.new( $index,
                                  :scope('keyed'),
                                  :viviself('Undef'),

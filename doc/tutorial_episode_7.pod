@@ -210,9 +210,9 @@ first child is always evaluated, and if true, the second child
 (the C<then> block) is evaluated (remember, the third child -- the C<else>
 clause -- is optional). It would be great to be able to implement the and
 operator using a C<PAST::Op( :pasttype('if') )> node. Well, you can, using
-the C<is pasttype> clause! Here's how:
+the ":pasttype" option! Here's how:
 
- proto 'infix:and' is tighter('infix:or') is pasttype('if') { ... }
+    token infix:sym<and> { <sym> <O('%conjunction, :pasttype<if>')> }
 
 So what about the or operator? When evaluating an or-expression, the first
 operand is evaluated. If it evaluates to true, then there's no need to evaluate

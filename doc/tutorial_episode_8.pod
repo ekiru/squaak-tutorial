@@ -206,15 +206,19 @@ parameter, Parrot creates an array, while for the named slurpy parameter a
 hashtable is created. This happens to be exactly what we need! Implementing
 the array and hash constructors becomes trivial:
 
- .sub '!array'
-     .param pmc fields :slurpy
-     .return (fields)
- .end
+ # Inset this in src/Squaak/Runtime.pm
 
- .sub '!hash'
-     .param pmc fields :named :slurpy
-     .return (fields)
- .end
+ {
+     my sub array (*@args) { @args; }
+     my sub hash (*%args) { %args; }
+
+     Q:PIR {
+         $P0 = find_lex 'array'
+         set_global '!array', $P0
+         $P0 = find_lex 'hash'
+         set_global '!hash', $P1
+     }
+ }
 
 Array and hashtable constructors can then be compiled into subroutine calls to
 the respective Parrot subroutines, passing all fields as arguments. (Note that

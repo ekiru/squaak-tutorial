@@ -243,7 +243,7 @@ should be generated. Instead of generating a subroutine invocation with the
 operands as arguments, it will generate the specified instruction with the
 operator's operands as arguments. Neat huh? Let's look at an example:
 
- proto 'infix:+' is tighter('infix:<') is pirop('n_add') { ... }
+    token infix:sym<+> { <sym> <O('%additive, :pirop<add>')> }
 
 This specifies to use the C<n_add> instruction, which tells Parrot to create a
 new result object instead of changing one of the operands. Why not just the

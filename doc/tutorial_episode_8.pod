@@ -119,7 +119,7 @@ index.
      make $past;
  }
 
-First, we retrieve the PAST node for expression. Then, we create a keyed
+First, we retrieve the PAST node for EXPR. Then, we create a keyed
 variable access operation, by creating a PAST::Var node and setting its scope
 to C<keyed>. If a C<PAST::Var> node has keyed scope, then the first child is
 evaluated as the aggregate object, and the second child is evaluated as the

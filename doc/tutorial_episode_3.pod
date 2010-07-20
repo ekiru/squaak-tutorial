@@ -10,11 +10,10 @@ Starting from a high-level overview, we quickly created our own little scripting
 language called I<Squaak>, using a Perl script provided with Parrot. We
 discussed the general structure of PCT-based compilers, and each of the default
 four transformation phases.
-This third episode is where the Fun begins. In this episode, we shall introduce
-the full specification of Squaak. In this and following episodes, we will
-implement this specification step by step, in small increments that are easy to
-digest. Once you get a feel for it, you'll notice implementing Squaak is almost
-trivial, and most important, a lot of fun! So, let's get started!
+This third episode is where the Fun begins. In this episode, we'll introduce
+the full specification of Squaak. In this and following episodes, we'll
+implement this specification step by step in small easy-to-digest increments.
+So let's get started!
 
 =head2 Squaak Grammar
 
@@ -26,7 +25,7 @@ specification uses the following meta-syntax:
     [step]      indicates an optional step
     'do'        indicates the keyword 'do'
 
-Below is Squaak's grammar. The start symbol is program.
+Below is Squaak's grammar. The start symbol is C<program>.
 
     program              ::= {stat-or-def}
 
@@ -123,35 +122,36 @@ Gee, that's a lot, isn't it? Actually, this grammar is rather small compared to
 "real world" languages such as C, not to mention Perl 6. No worries though, we
 won't implement the whole thing at once, but in small steps. What's more, the
 exercises section contains enough exercises for you to learn to use the PCT
-yourself! The solutions to these exercises will be posted a few days later (but
-you really only need a couple of hours to figure them out).
+yourself! The solutions to these exercises are in later episodes if you don't
+want to take the time to solve them yourself.
 
 =head2 Semantics
 
-Most of the Squaak language is straightforward; the if-statement executes
+Most of the Squaak language is straightforward; the C<if-statement> executes
 exactly as you would expect. When we discuss a grammar rule (for its
-implementation), a semantic specification will be included. This is to prevent
-myself from writing a complete language manual, which could take some pages.
+implementation), a semantic specification will be included. This is to avoid
+writing a complete language manual since that's probably not what you're here
+for.
 
 =head2 Let's get started!
 
 In the rest of this episode we will implement the basic parts of the grammar,
 such as the basic data types and assignments. At the end of this episode,
-you'll be able to assign simple values to (global) variables. It ain't much, but
+you'll be able to assign simple values to (global) variables. It's not much but
 it's a very important first step. Once these basics are in place, you'll notice
-that adding a certain syntactic construct becomes a matter of minutes.
+that adding a certain syntactic construct can be done in a matter of minutes.
 
 First, open your editor and open the files F<src/Squaak/Grammar.pm> and
-F<src/Squaak/Actions.pm>. The former implements the parser using Perl 6 rules,
+F<src/Squaak/Actions.pm>. The former implements the parser using Perl 6 rules
 and the latter contains the parse actions, which are executed during the parsing
 stage.
 
-In the file Grammar.pm, you'll see the top-level rule, named C<TOP>. It's
+In the file Grammar.pm you'll see the top-level rule, named C<TOP>. It's
 located at, ehm... the top. When the parser is invoked, it will start at this
-rule (a rule is nothing else than a method of the grammar class).
-When we generated this language (in the first episode), some default rules were
-defined. Now we're going to make some small changes, just enough to get us
-started. Replace the C<statement> rule with this rule:
+rule.  A rule is nothing else than a method of the Grammar class.  When we
+generated this language some default rules were defined. Now we're going to
+make some small changes, just enough to get us started. Replace the
+C<statement> rule with this rule:
 
     rule statement {
         <assignment>
@@ -192,10 +192,12 @@ Add these rules:
         <primary>
     }
 
-Rename the token C<term:sym<integer> > as C<term:sym<integer_constant> >, and C<term:sym<quote> > as
-C<term:sym<string_constant> > (to better match our language specification).
+Rename the token C<< term:sym<integer> >> to C<< term:sym<integer_constant> >> and
+C<< term:sym<quote> >> to C<< term:sym<string_constant> >> (to better match our
+language specification).
 
-Add action methods for term:sym<integer_constant> and term:sym<string_constant>:
+Add action methods for term:sym<integer_constant> and term:sym<string_constant>
+to F<src/Squaak/Actions.pm>:
 
     method term:sym<integer_constant>($/) {
         make PAST::Val.new(:value($<integer>.ast), :returns<Integer>);
@@ -211,7 +213,8 @@ Add action methods for term:sym<integer_constant> and term:sym<string_constant>:
 
 PAST::Val nodes are used the represent constant values.
 
-Finally, remove the rules C<proto token statement_control>, C<rule statement_control:sym<say> >, and <rule statement_control:sym<print> >.
+Finally, remove the rules C<proto token statement_control>,
+C<< rule statement_control:sym<say> >>, and C<< rule statement_control:sym<print> >>.
 
 Phew, that was a lot of information! Let's have a closer look at some things
 that may look unfamiliar. The first new thing is in the rule C<identifier>.
@@ -219,18 +222,21 @@ Instead of the C<rule> keyword, you see the keyword C<token>. In short, a token
 doesn't skip whitespace between the different parts specified in the token,
 while a rule does. For now, it's enough to remember to use a token if you want
 to match a string that doesn't contain any whitespace (such as literal constants
-and identifiers), and use a rule if your string does (and should) contain
+and identifiers) and use a rule if your string does (and should) contain
 whitespace (such as a an if-statement). We shall use the word C<rule> in a
 general sense, which could refer to a token. For more information on rules and
-tokens (and there's a third type, called C<regex>), take a look at synopsis 5.
+tokens take a look at Synopsis 5 or look at Moritz's blog post on the subject
+in the references.
 
-In rule C<assignment>, the <EXPR> subrule is one that we haven't defined. The EXPR rule is inherited from HLL::Grammar, and it initiates the grammar's operator-precedence parser to parse an expression. For now, don't worry about it. All you need to know is that it will give us one of our terms.
+In rule C<assignment>, the <EXPR> subrule is one that we haven't defined. The
+EXPR rule is inherited from HLL::Grammar, and it initiates the grammar's
+operator-precedence parser to parse an expression. For now, don't worry about
+it. All you need to know is that it will give us one of our terms.
 
-In token C<identifier>, the first subrule is called an assertion. It asserts
-that an C<identifier> does not match the rule keyword. In other words, a keyword
-cannot be used as an identifier. The second subrule is called C<ident>, which is
-a built-in rule in the class C<PCT::Grammar>, of which this grammar is a
-subclass.
+In token C<identifier> the first subrule is called an assertion. It asserts
+that an C<identifier> does not match the rule keyword. In other words a keyword
+cannot be used as an identifier. The second subrule is called C<ident> which is
+a built-in rule in the class C<PCT::Grammar>, the parent class of this grammar.
 
 In token C<keyword>, all keywords of Squaak are listed. At the end there's a
 C<<< >> >>> marker, which indicates a word boundary. Without this marker, an
@@ -355,6 +361,8 @@ we'll need them, these rules will be added.
 =head2 References
 
 =over 4
+
+=item * rules, regexes and tokens: http://perlgeek.de/blog-en/perl-5-to-6/07-rules.writeback#Named_Regexes_and_Grammars
 
 =item * pdd26: ast
 

@@ -204,6 +204,17 @@ C<term:sym<string_constant> > (to better match our language specification).
 
 # TODO Briefly explain the operator-precedence parser and terms and protos.
 
+Add action methods for term:sym<integer_constant> and term:sym<string_constant>:
+
+    method term:sym<integer_constant>($/) {
+        make PAST::Val.new(:value($<integer>.ast), :returns<Integer>);
+    }
+    method term:sym<string_constant>($/) {
+        make PAST::Val.new(:value($<quote>.ast), :returns<String>);
+    }
+
+PAST::Val nodes are used the represent constant values.
+
 Finally, remove the rules C<proto token statement_control>, C<rule statement_control:sym<say> >, and <rule statement_control:sym<print> >.
 
 Phew, that was a lot of information! Let's have a closer look at some things

@@ -272,30 +272,7 @@ Circumfix operators are treated as terms by the operator-precedence parser, so i
 
 For all grammar rules we introduced, we also introduced an action method that
 is invoked after the grammar rule was done matching. What about the action
-method for the optable? Naturally, there must be some actions to be executed.
-Well, there is, but to be frank, I cannot explain it to you. Every time I
-needed the action method for an optable, I just copied it from an existing
-actions file. Of course, the action method's name should match the name of the
-optable (the rule that has the "is optable" clause). So, here goes:
-
- method expression($/, $key) {
-     if ($key eq 'end') {
-         make $($<expr>);
-     }
-     else {
-         my $past := PAST::Op.new( :name($<type>),
-                                   :pasttype($<top><pasttype>),
-                                   :pirop($<top><pirop>),
-                                   :lvalue($<top><lvalue>),
-                                   :node($/) );
-
-         for @($/) {
-             $past.push( $($_) );
-         }
-
-         make $past;
-     }
- }
+method for EXPR? Our Squaak::Actions class inherits that from HLL::Actions. We don't have to write one.
 
 =head2 What's Next?
 

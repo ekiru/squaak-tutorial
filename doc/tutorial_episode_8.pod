@@ -88,7 +88,6 @@ straightforward. First, we're going to update the grammar rule for primary:
 
  rule primary {
      <identifier> <postfix_expression>*
-     {*}
  }
 
  rule postfix_expression {

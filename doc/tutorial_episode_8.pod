@@ -37,7 +37,7 @@ Just as there are integer literals (42) and string literals ("hello world")
 that can be assigned to variables, you can have array literals. Below is the
 grammar rule for this:
 
- rule array_constructor {
+ token circumfix:sym<[ ]> {
      '[' <EXPR> ** ',' ']'
  }
 
@@ -59,7 +59,7 @@ Besides array literals, Squaak supports hashtable literals, that can be
 constructed through a hashtable constructor. The syntax for this is expressed
 below:
 
- rule hash_constructor {
+ rule circumfix:sym<{ }> {
      '{' <named_field> ** ',' <named_field> '}'
  }
 
@@ -281,7 +281,7 @@ for hashtables. Implement the action method for key.
 
 =item *
 
-Implement the action methods for array_constructor and hash_constructor. Use a
+Implement the action methods for circumfix:sym<[ ]> and circumfix:sym<{ }>. Use a
 C<PAST::Op> node and set the pasttype to 'call'. Use the "name" attribute to
 specify the names of the subs to be invoked (e.g., C<:name("!array")> ). Note
 that all hash fields must be passed as named arguments. Check out PDD26 for

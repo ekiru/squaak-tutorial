@@ -133,17 +133,6 @@ exactly as you would expect. When we discuss a grammar rule (for its
 implementation), a semantic specification will be included. This is to prevent
 myself from writing a complete language manual, which could take some pages.
 
-=head2 Interactive Squaak
-
-Although the Squaak compiler can be used in interactive mode, there is one point
-of attention to be noted. When defining a local variable using the C<var>
-keyword, this variable will be lost in any consecutive commands. The variable
-will only be available to other statements within the same command (a command is
-a set of statements before you press enter). This has to do with the code
-generation by the PCT, and will be fixed at a later point. For now, just
-remember it doesn't work.
-# TODO(check whether this is still true)
-
 =head2 Let's get started!
 
 In the rest of this episode we will implement the basic parts of the grammar,
